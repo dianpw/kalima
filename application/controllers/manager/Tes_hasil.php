@@ -37,6 +37,8 @@ class Tes_hasil extends Member_Controller {
         $data['rentang_waktu'] = $tanggal_awal.' - '.$tanggal_akhir;
 
         $query_group = $this->cbt_user_grup_model->get_group();
+		
+
         $select = '<option value="semua">Semua Kelas</option>';
         if($query_group->num_rows()>0){
         	$query_group = $query_group->result();
@@ -49,8 +51,16 @@ class Tes_hasil extends Member_Controller {
         }
         $data['select_group'] = $select;
 
-        $query_tes = $this->cbt_tes_user_model->get_by_group();
-        $select = '<option value="semua">Semua Tes</option>';
+       // $query_tes = $this->cbt_tes_user_model->get_by_group();
+		
+		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;
+		if($id!=null){
+        	$query_tes = $this->cbt_tes_user_model->get_by_group_id($id);
+		}else{
+        	$query_tes = $this->cbt_tes_user_model->get_by_group();
+        	$select = '<option value="semua">Semua Tes</option>';
+		}
+		$select ='';
         if($query_tes->num_rows()>0){
         	$query_tes = $query_tes->result();
         	foreach ($query_tes as $temp) {
@@ -58,7 +68,7 @@ class Tes_hasil extends Member_Controller {
         	}
         }
         $data['select_tes'] = $select;
-        
+        //var_dump($data);
         $this->template->display_admin($this->kelompok.'/tes_hasil_view', 'Hasil Tes', $data);
     }
 
@@ -215,6 +225,7 @@ class Tes_hasil extends Member_Controller {
 	    // get result after running query and put it in array
 		$i=$start;
 		$query = $query->result();
+		//var_dump($status);
 		//var_dump($query);
 	    foreach ($query as $temp) {			
 			$record = array();
@@ -231,18 +242,13 @@ class Tes_hasil extends Member_Controller {
             $record[] = $temp->grup_nama;
 			if(empty($temp->tesuser_id)){
 				$record[] = '<b>'.stripslashes($temp->user_firstname).'</b>';
+				$record[] = '0';
 			}else{
-				$record[] = '<a href="#" title="Klik untuk mengetahui Detail Tes" onclick="detail_tes(\''.$temp->tesuser_id.'\')"><b>'.stripslashes($temp->user_firstname).'</b></a>';
+				$record[] = '<a href="#" title="Klik untuk mengetahui Detail Tes" onclick="detail_tes(\''.$temp->tesuser_id.'\')"><b>'.stripslashes($temp->user_firstname).'</b></a>';				
+				$record[] = $this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil;
 			}
 
-			//if(empty($temp->nilai)){
-			//	$record[] = '0';
-			//}else{
-				//$record[] = $temp->nilai;
-				//$data['nilai'] = (($nilai->hasil1/$query_test->tes_max_score)*70) + ((($nilai->hasil2+$nilai->hasil3)/$query_test->tes_max_score)*30);
-				//$record[] = round(($temp->nilai/$temp->tes_max_score)*100);
-				$record[] = $this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil;
-			//}
+			//$record[] = $this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil;
 			
 			if(empty($temp->tesuser_status)){
 				$record[] = 'Belum memulai';

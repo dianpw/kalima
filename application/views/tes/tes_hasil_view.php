@@ -111,7 +111,9 @@
                                 <th class="all">Nama User</th>
                                 <th>Nilai</th>
                                 <th>Status</th>
+                                <?php if($this->session->userdata('cbt_level')=='operator-soal'){}else{ ?>
                                 <th class="all"></th>
+                                <?php } ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,12 +125,15 @@
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
+                                <td> </td>                                
+                                <?php if($this->session->userdata('cbt_level')=='operator-soal'){}else{ ?>
                                 <td> </td>
-                                <td> </td>
+                                <?php } ?>
                             </tr>
                         </tbody>
 					</table>                        
 				</div>
+                <?php if($this->session->userdata('cbt_level')=='operator-soal'){}else{ ?>
                 <div class="box-footer">
                     <button type="button" id="btn-edit-pilih" title="Pilih Hasil Tes" class="btn btn-default pull-right">Pilih Semua</button>
                     <button type="button" id="btn-edit-hapus" title="Hapus Hasil" class="btn btn-primary">Hapus</button>
@@ -136,6 +141,7 @@
                     <button type="button" id="btn-edit-buka-tes" class="btn btn-primary">Buka Tes</button>
                     <button type="button" id="btn-edit-waktu" class="btn btn-primary">Tambah Waktu</button>
                 </div>
+                <?php } ?>
 			</div>
         </div>
 
@@ -281,15 +287,16 @@
                   "bServerSide": true, 
                   "searching": true,
                   "aoColumns": [
-    					{"bSearchable": true, "bSortable": true, "sWidth":"20px"},
-    					{"bSearchable": true, "bSortable": true},
-                        {"bSearchable": true, "bSortable": true},
-                        {"bSearchable": true, "bSortable": true},
-                        {"bSearchable": true, "bSortable": true},
-                        {"bSearchable": true, "bSortable": true},
-                        {"bSearchable": true, "bSortable": true},
-    					{"bSearchable": true, "bSortable": true, "sWidth":"150px"},
-                        {"bSearchable": true, "bSortable": true, "sWidth":"20px"}],
+    					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
+    					{"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false},
+    					{"bSearchable": true, "bSortable": false, "sWidth":"150px"},
+                        <?php if($this->session->userdata('cbt_level')=='operator-soal'){}else{ ?>
+                        {"bSearchable": true, "bSortable": false, "sWidth":"20px"}<?php } ?>],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "responsive": true,
@@ -301,6 +308,7 @@
                     aoData.push( { "name": "urutkan", "value": $('#pilih-urutkan').val()} );
 					aoData.push( { "name": "status", "value": $('#pilih-status').val()} );
 					aoData.push( { "name": "keterangan", "value": $('#pilih-keterangan').val()} );
+                    
                   }
          });          
     });

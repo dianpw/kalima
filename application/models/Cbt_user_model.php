@@ -127,16 +127,30 @@ class Cbt_user_model extends CI_Model{
 	*
 	*/
 	function get_datatable_hasiltes($start, $rows, $tes_id, $grup_id, $urutkan, $tanggal, $keterangan, $search){
+         //SELECT SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0)) AS hasil1, SUM(IF(cbt_soal.soal_tipe=2,tessoal_nilai,0)) AS hasil2, SUM(IF(cbt_soal.soal_tipe=3,tessoal_nilai,0)) AS hasil3, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal INNER JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id=
         $sql = 'tes_begin_time>="'.$tanggal[0].'" AND tes_end_time<="'.$tanggal[1].'" AND tesuser_id IS NULL AND user_firstname LIKE "%'.$search.'%"';
 		
         if($tes_id!='semua'){
             $sql = $sql.' AND tes_id="'.$tes_id.'"';
+            //$sql = $sql.' AND tesuser_tes_id="'.$tes_id.'"';
         }
         if($grup_id!='semua'){
             $sql = $sql.' AND user_grup_id="'.$grup_id.'"';
         }
         $order = '';
+        /*
         if($urutkan=='nama'){
+            $order = 'user_firstname ASC';
+        }else if($urutkan=='waktu'){
+            $order = 'tes_begin_time DESC';
+        }else{
+            $order = 'tes_id ASC';
+        }
+        */
+
+        if($urutkan=='kelas'){
+            $order = 'cbt_user_grup.grup_nama ASC';
+        }else if($urutkan=='nama'){
             $order = 'user_firstname ASC';
         }else if($urutkan=='waktu'){
             $order = 'tes_begin_time DESC';
@@ -147,7 +161,7 @@ class Cbt_user_model extends CI_Model{
 		if(!empty($keterangan)){
 			$sql = $sql.' AND user_detail LIKE "%'.$keterangan.'%"';
 		}
-
+        //cbt_user
 		$this->db->select('cbt_tes.*,cbt_user_grup.grup_nama, cbt_tes.*, cbt_user.*, "0" AS nilai')
                  ->where('( '.$sql.' )')
                  ->from($this->table)
@@ -157,7 +171,10 @@ class Cbt_user_model extends CI_Model{
 				 ->join('cbt_tes_user', '(cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id) AND (cbt_tes_user.tesuser_user_id = cbt_user.user_id)', 'left')
 				 ->order_by($order)
                  ->limit($rows, $start);
-        return $this->db->get();
+        
+        $hasil = $this->db->get();
+        //print_r($this->db->last_query());
+        return $hasil;
 	}
     
     function get_datatable_hasiltes_count($tes_id, $grup_id, $urutkan, $tanggal, $keterangan, $search){
