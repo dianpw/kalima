@@ -62,7 +62,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Waktu Tes</label>
                             <div class="col-sm-9">
-                                <input type="text" name="tambah-waktu" id="tambah-waktu" class="form-control input-sm" value="30" />
+                                <input type="text" name="tambah-waktu" id="tambah-waktu" class="form-control input-sm"  />
                                 <p class="help-block">Waktu tes dalam satuan menit</p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Token</label>
                             <div class="col-sm-9">
-                                <input type="checkbox" name="tambah-token" id="tambah-token" value="1" >
+                                <input type="checkbox" name="tambah-token" id="tambah-token" value="1" checked >
                                 <p class="help-block">Saat awal tes, user memasukkan Token dari operator</p>
                             </div>
                         </div>
@@ -172,13 +172,13 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Jml Soal</label>
                             <div class="col-sm-9">
-                                <input type="text" name="soal-jml" id="soal-jml" class="form-control input-sm" value="2" >
+                                <input type="text" name="soal-jml" id="soal-jml" class="form-control input-sm" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Jml Jawaban</label>
                             <div class="col-sm-9">
-                                <input type="text" name="soal-jml-jawaban" id="soal-jml-jawaban" class="form-control input-sm" value="3" >
+                                <input type="text" name="soal-jml-jawaban" id="soal-jml-jawaban" class="form-control input-sm" value="5" >
                             </div>
                         </div>
                         <div class="form-group">

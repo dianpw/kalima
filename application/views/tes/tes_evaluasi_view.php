@@ -37,6 +37,7 @@
                                 <select name="pilih-urutkan" id="pilih-urutkan" onclick="refresh_table()" class="form-control input-sm">
                                     <option value="soal">Soal</option>  
                                     <option value="user">User</option>
+                                    <option value="kelas">Kelas</option>
                                 </select>
                             </div>
                         </div>
@@ -60,6 +61,7 @@
 						<thead>
                             <tr>
                                 <th>No.</th>
+                                <th>Peserta</th>
                                 <th>Soal</th>
                                 <th>Jawaban</th>
                                 <th></th>
@@ -67,6 +69,7 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
@@ -175,6 +178,7 @@
                   "searching": false,
                   "aoColumns": [
     					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
+    					{"bSearchable": false, "bSortable": false, "sWidth":"20%"},
     					{"bSearchable": false, "bSortable": false, "sWidth":"40%"},
                         {"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],

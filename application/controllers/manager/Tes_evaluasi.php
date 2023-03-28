@@ -30,8 +30,12 @@ class Tes_evaluasi extends Member_Controller {
     public function index($page=null, $id=null){
         $data['kode_menu'] = $this->kode_menu;
         $data['url'] = $this->url;
-
-        $query_tes = $this->cbt_tes_user_model->get_by_group();
+		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;
+		if($id!=null){
+        	$query_tes = $this->cbt_tes_user_model->get_by_group_id($id);
+		}else{
+        	$query_tes = $this->cbt_tes_user_model->get_by_group();
+		}
         $select = '';
         if($query_tes->num_rows()>0){
         	$query_tes = $query_tes->result();
@@ -39,7 +43,7 @@ class Tes_evaluasi extends Member_Controller {
         		$select = $select.'<option value="'.$temp->tes_id.'">'.$temp->tes_nama.'</option>';
         	}
         }
-        $data['select_tes'] = $select;
+        $data['select_tes'] = $select;		
         
         $this->template->display_admin($this->kelompok.'/tes_evaluasi_view', 'Evaluasi Jawaban', $data);
     }
@@ -132,6 +136,7 @@ class Tes_evaluasi extends Member_Controller {
 	    // get result after running query and put it in array
 		$i=$start;
 		$query = $query->result();
+		//var_dump($query);
 	    foreach ($query as $temp) {			
 			$record = array();
 
@@ -139,6 +144,7 @@ class Tes_evaluasi extends Member_Controller {
             $soal = str_replace("[base_url]", base_url(), $soal);
             
 			$record[] = ++$i;
+            $record[] = $temp->user_firstname.' </br><b>['.$temp->grup_nama.']</b>';
             $record[] = $soal;
 			// $record[] = '<div style="width:600px;"><pre style="white-space: pre-wrap;word-wrap: break-word;">'.$temp->tessoal_jawaban_text.'</pre></div>';
 

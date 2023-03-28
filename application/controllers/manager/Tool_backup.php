@@ -33,12 +33,21 @@ class Tool_backup extends Member_Controller {
 		$this->load->dbutil();
 
 		// Backup your entire database and assign it to a variable
-		$backup = $this->dbutil->backup();
+		//$backup = $this->dbutil->backup();
+		$tanggal = date('Y-m-d_H-i-s');
+		$prefs = array(
+			'format'        => 'zip',                       // gzip, zip, txt
+			'filename'      => 'backup_database_kalima_'.$tanggal,              // File name - NEEDED ONLY WITH ZIP FILES
+			'add_drop'      => TRUE,                        // Whether to add DROP TABLE statements to backup file
+			'add_insert'    => TRUE,                        // Whether to add INSERT data to backup file
+			'newline'       => "\n"                         // Newline character used in backup file
+		);
+	
+		$backup = $this->dbutil->backup($prefs);
 
 		// Load the download helper and send the file to your desktop
 		$this->load->helper('download');
-		$tanggal = date('Y-m-d_H-i-s');
-		force_download('backup_database_zya_cbt_'.$tanggal.'_.gz', $backup);
+		force_download('backup_database_kalima_'.$tanggal.'.zip', $backup);
     }
 
     public function data_upload(){
@@ -52,7 +61,7 @@ class Tool_backup extends Member_Controller {
 		$this->zip->read_dir($path);
 
 		// Download the file to your desktop. Name it "my_backup.zip"
-		$this->zip->download('backup_data_upload_zya_cbt.zip');
+		$this->zip->download('backup_data_upload_kalima.zip');
     }
 	
 	public function clear_session(){
