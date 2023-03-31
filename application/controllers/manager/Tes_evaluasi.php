@@ -43,7 +43,22 @@ class Tes_evaluasi extends Member_Controller {
         		$select = $select.'<option value="'.$temp->tes_id.'">'.$temp->tes_nama.'</option>';
         	}
         }
-        $data['select_tes'] = $select;		
+        $data['select_tes'] = $select;	
+		
+        $query_group = $this->cbt_user_grup_model->get_group();
+		
+
+        $selectg = '<option value="semua">Semua Kelas</option>';
+        if($query_group->num_rows()>0){
+        	$query_group = $query_group->result();
+        	foreach ($query_group as $temp) {
+        		$selectg = $selectg.'<option value="'.$temp->grup_id.'">'.$temp->grup_nama.'</option>';
+        	}
+
+        }else{
+        	$selectg = '<option value="0">Tidak Ada Kelas</option>';
+        }
+        $data['select_group'] = $selectg;	
         
         $this->template->display_admin($this->kelompok.'/tes_evaluasi_view', 'Evaluasi Jawaban', $data);
     }
@@ -105,6 +120,7 @@ class Tes_evaluasi extends Member_Controller {
     function get_datatable(){
 		// variable initialization
 		$tes_id = $this->input->get('tes');
+		$grup_id = $this->input->get('group');
 		$urutkan = $this->input->get('urutkan');
 
 		$search = "";
@@ -121,10 +137,10 @@ class Tes_evaluasi extends Member_Controller {
 		$rows = $this->get_rows();
 
 		// run query to get user listing
-		$query = $this->cbt_tes_user_model->get_datatable_evaluasi($start, $rows, $tes_id, $urutkan);
+		$query = $this->cbt_tes_user_model->get_datatable_evaluasi($start, $rows, $tes_id, $urutkan, $grup_id);
 		$iFilteredTotal = $query->num_rows();
 		
-		$iTotal= $this->cbt_tes_user_model->get_datatable_evaluasi_count($tes_id, $urutkan)->row()->hasil;
+		$iTotal= $this->cbt_tes_user_model->get_datatable_evaluasi_count($tes_id, $urutkan, $grup_id)->row()->hasil;
 	    
 		$output = array(
 			"sEcho" => intval($_GET['sEcho']),
