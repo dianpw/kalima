@@ -167,12 +167,7 @@ class Modul_filemanager extends Member_Controller {
 				$d = str_replace("/","", $dir);
 				$mapel = $this->mapel_model->get_mapel($d);
 				$mpl = $mapel->row();
-
-				if( $id == $d){
-					$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"> <b>MAPEL '.$mpl->topik_nama.'</b></a>';
-				}else{
-					$record[] = 'MAPEL '.$mpl->topik_nama;
-				}	
+				$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"> <b>MAPEL '.$mpl->topik_nama.'</b></a>';
 				//$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"> <b>Mapel '.$temp.'</b></a>';
 				$is_dir=1;
 			}else{
@@ -198,9 +193,7 @@ class Modul_filemanager extends Member_Controller {
 
 			$record[] = date('Y-m-d H:i:s', $file_info['date']);
 			$record[] = '<div style="text-align:right;">'.number_format($file_info['size']).' B</div>';
-			if( $id == $dir){
 			$record[] = '<a onclick="hapus_file(\''.$temp.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Hapus</a>';
-			}else{ $record[] = ''; }
 			$output['aaData'][] = $record;
 
 			$iTotal++;
