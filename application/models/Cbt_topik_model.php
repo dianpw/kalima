@@ -73,17 +73,64 @@ class Cbt_topik_model extends CI_Model{
         return $this->db->get();
     }
 	
-	function get_datatable($start, $rows, $kolom, $isi, $modul){
-		$this->db->where('('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id='.$modul.')')
+	function get_datatable($start, $rows, $kolom, $isi, $modul){        
+		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;
+		if($id!=null){
+            $data= explode(",",$id);
+            $whr='';
+            $i=0;
+            $x=count($data);
+            if($data==""){
+            }else{
+                foreach($data as $mapel) {
+                    $whr .=' topik_id LIKE "'.$mapel.'"';
+                    if($i==($x-1)){ 
+                    }else{
+                        $whr .=' OR ';                
+                    }
+                    $i++;
+                }
+            }
+
+        	$sql = '('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id="'.$modul.'" AND '.$whr.')';
+
+		}else{
+        	$sql = '('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id='.$modul.')';
+		}
+
+		$this->db->where($sql)
                  ->from($this->table)
 				 ->order_by($kolom, 'ASC')
                  ->limit($rows, $start);
         return $this->db->get();
 	}
     
-    function get_datatable_count($kolom, $isi, $modul){
+    function get_datatable_count($kolom, $isi, $modul){        
+		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;
+		if($id!=null){
+            $data= explode(",",$id);
+            $whr='';
+            $i=0;
+            $x=count($data);
+            if($data==""){
+            }else{
+                foreach($data as $mapel) {
+                    $whr .=' topik_id LIKE "'.$mapel.'"';
+                    if($i==($x-1)){ 
+                    }else{
+                        $whr .=' OR ';                
+                    }
+                    $i++;
+                }
+            }
+
+        	$sql = '('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id="'.$modul.'" AND '.$whr.')';
+
+		}else{
+        	$sql = '('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id='.$modul.')';
+		}
 		$this->db->select('COUNT(*) AS hasil')
-                 ->where('('.$kolom.' LIKE "%'.$isi.'%" AND topik_modul_id='.$modul.')')
+                 ->where($sql)
                  ->from($this->table);
         return $this->db->get();
 	}
