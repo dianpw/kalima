@@ -72,11 +72,13 @@
                                 <th>Peserta</th>
                                 <th>Soal</th>
                                 <th>Jawaban</th>
-                                <th></th>
+                                <th>Nilai</th>
+                                <th>Evaluasi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
@@ -185,9 +187,10 @@
                   "bServerSide": true, 
                   "searching": false,
                   "aoColumns": [
-    					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
+    					{"bSearchable": false, "bSortable": false, "sWidth":"10px"},
     					{"bSearchable": false, "bSortable": false, "sWidth":"20%"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"40%"},
+    					{"bSearchable": false, "bSortable": false, "sWidth":"30%"},
+    					{"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",

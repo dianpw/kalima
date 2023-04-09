@@ -147,7 +147,7 @@
 		} 
   </script>
   </head>
-  <body class="skin-green sidebar-mini">
+  <body class="skin-green sidebar-mini" style="padding-right: 0px !important;">
     <div class="wrapper">
 
       <header class="main-header">

@@ -171,10 +171,19 @@ class Tes_evaluasi extends Member_Controller {
 			
 			$record[] = $jawaban;
 			
+			if($temp->tessoal_nilai==0){
+				$nilai = "<span class='label label-danger'>".$temp->tessoal_nilai."</span>";
+			}else{
+				$nilai = "<span class='label label-success'>".$temp->tessoal_nilai."</span>";
+			}
+
+			$record[] = $nilai;
+			
             $record[] = '<a onclick="evaluasi(\''.$temp->tessoal_id.'\',\''.$temp->tes_score_wrong.'\',\''.$temp->tes_score_right.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Evaluasi</a>';
             
 
 			$output['aaData'][] = $record;
+			//var_dump($temp);
 		}
 		// format it to JSON, this output will be displayed in datatable
         

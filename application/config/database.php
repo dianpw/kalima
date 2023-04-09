@@ -77,7 +77,6 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
-	//'password' => '1q2w3e4r',
 	'password' => '',
 	'database' => 'kalima',
 	'dbdriver' => 'mysqli',
