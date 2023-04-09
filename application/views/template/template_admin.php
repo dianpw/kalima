@@ -74,9 +74,9 @@
     <script src="<?php echo base_url(); ?>public/plugins/adminlte/js/app.min.js" type="text/javascript"></script>
     <!-- Sparkline -->
     <script src="<?php echo base_url(); ?>public/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-    <!-- SlimScroll 1.3.0 -->
+    <!-- SlimScroll 1.3.0 
     <script src="<?php echo base_url(); ?>public/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-	
+	-->
 	 <!-- ChartJS 1.0.1 -->
     <script src="<?php echo base_url(); ?>public/app.js" type="text/javascript"></script>
 
@@ -113,6 +113,9 @@
         max-width: 100%;
         height: auto;
       }
+      .resetpad {
+        padding-right: 0 !important;
+      }
     </style>
 
     <script type="text/javascript">
@@ -147,7 +150,7 @@
 		} 
   </script>
   </head>
-  <body class="skin-green sidebar-mini" style="padding-right: 0px !important;">
+  <body class="hold-transition skin-green sidebar-mini resetpad" >
     <div class="wrapper">
 
       <header class="main-header">
