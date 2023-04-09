@@ -302,15 +302,15 @@ class Cbt_tes_user_model extends CI_Model{
         if($grup_id!='semua'){
             $sql = $sql.' AND user_grup_id="'.$grup_id.'"';
         }
-        $order = 'cbt_tes_soal.tessoal_nilai DESC';
+        $order = 'cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC';
         if($urutkan=='soal'){
-            $order = 'cbt_tes_soal.tessoal_nilai DESC, tessoal_soal_id ASC';
+            $order = 'cbt_tes_soal.tessoal_nilai ASC, tessoal_soal_id ASC, tessoal_comment ASC';
         }elseif($urutkan=='kelas'){
-            $order = 'cbt_tes_soal.tessoal_nilai DESC, cbt_user_grup.grup_nama ASC';
+            $order = 'cbt_tes_soal.tessoal_nilai ASC, cbt_user_grup.grup_nama ASC, tessoal_comment ASC';
         }else{
-            $order = 'cbt_tes_soal.tessoal_nilai DESC, tesuser_id ASC';
+            $order = 'cbt_tes_soal.tessoal_nilai ASC, tesuser_id ASC, tessoal_comment ASC';
         }
-        //SELECT cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*, cbt_user.user_firstname, cbt_user_grup.grup_nama FROM `cbt_tes_user` JOIN cbt_user ON cbt_tes_user.tesuser_user_id=cbt_user.user_id JOIN cbt_user_grup ON cbt_user.user_grup_id=cbt_user_grup.grup_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id WHERE soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL;
+        //SELECT cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*, cbt_user.user_firstname, cbt_user_grup.grup_nama FROM `cbt_tes_user` JOIN cbt_user ON cbt_tes_user.tesuser_user_id=cbt_user.user_id JOIN cbt_user_grup ON cbt_user.user_grup_id=cbt_user_grup.grup_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id WHERE soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL ORDER BY cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC;
         $this->db->select('cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_user.user_firstname, cbt_user_grup.grup_nama, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*')
                 // ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
                  ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL '.$sql.' )')
@@ -333,9 +333,10 @@ class Cbt_tes_user_model extends CI_Model{
         if($grup_id!='semua'){
             $sql = $sql.' AND user_grup_id="'.$grup_id.'"';
         }
-
+        //SELECT cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*, cbt_user.user_firstname, cbt_user_grup.grup_nama FROM `cbt_tes_user` JOIN cbt_user ON cbt_tes_user.tesuser_user_id=cbt_user.user_id JOIN cbt_user_grup ON cbt_user.user_grup_id=cbt_user_grup.grup_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id WHERE soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL ORDER BY cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC;
         $this->db->select('COUNT(*) AS hasil')
-                 ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
+                 // ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
+                  ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL '.$sql.' )')
                  ->join('cbt_tes_soal', 'cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id')
                  ->join('cbt_user', 'cbt_tes_user.tesuser_user_id=cbt_user.user_id')
                  ->join('cbt_user_grup', 'cbt_user.user_grup_id=cbt_user_grup.grup_id')
