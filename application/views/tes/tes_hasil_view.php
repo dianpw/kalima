@@ -93,7 +93,7 @@
 					<div class="box-title">Daftar Hasil Tes</div>
                     <div class="box-tools pull-right">
                         <div class="dropdown pull-right">
-                            <a  style="cursor: pointer;" onclick="export_excel()">Export ke Excel</a>
+                            <a class="btn btn-primary" style="cursor: pointer;" onclick="export_excel()">Export ke Excel</a>
                         </div>
                     </div>
 				</div><!-- /.box-header -->
