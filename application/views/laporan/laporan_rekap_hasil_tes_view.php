@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <div class="callout callout-info">
                 <h4>Informasi</h4>
-                <p>Pilih Grup peserta yang akan di export Hasil tes nya pada bagian samping halaman ini, dan pilih rentang waktu Tes tersebut dikerjakan.</p>
+                <p>Pilih Kelas peserta yang akan di export Hasil tes nya pada bagian samping halaman ini, dan pilih rentang waktu Tes tersebut dikerjakan.</p>
                 <p>Siswa yang tidak mengikuti Tes, maka Hasilnya akan bernilai N/A pada file hasil Export.</p>
             </div>
         </div>
@@ -26,17 +26,17 @@
         <div class="col-md-4">
             <div class="box">
 				<div class="box-header with-border">
-					<div class="box-title">Pilih Grup</div>
+					<div class="box-title">Pilih Kelas</div>
     			</div><!-- /.box-header -->
 				
 				<div class="box-body">
 					<div class="form-group">
-						<label>Nama Grup</label>
+						<label>Nama Kelas</label>
 						<input type="hidden" id="nama-grup" name="nama-grup">
                         <select name="pilih-grup" id="pilih-grup" class="form-control input-sm">
 							<?php if(!empty($select_group)){ echo $select_group; } ?>
 						</select>
-						<span class="help-block">Pilih Grup yang akan di Export</span>
+						<span class="help-block">Pilih Kelas yang akan di Export</span>
 					</div>
                 </div>
 			</div>

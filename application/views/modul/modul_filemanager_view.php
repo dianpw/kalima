@@ -46,7 +46,7 @@
             <?php echo form_open_multipart($url.'/tambah_dir','id="form-tambah" class="form-horizontal"'); ?>
                 <div class="box">
                     <div class="box-header with-border">
-                        <div class="box-title">Create Directory</div>
+                        <div class="box-title">Buat Folder</div>
                     </div><!-- /.box-header -->
 
                     <div class="box-body">
@@ -54,18 +54,18 @@
                             <div class="box-body">
                                 <div id="form-pesan-tambah"></div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">Direktori</label>
+                                    <label class="col-sm-2 control-label">Folder</label>
                                     <div class="col-sm-10">
                                         <input type="hidden" name="tambah-posisi" id="tambah-posisi">
                                         <input type="text" class="form-control input-sm" id="tambah-dir" name="tambah-dir" >
-                                        <p class="help-block">Membuat direktori pada direktori yang aktif.</p>
+                                        <p class="help-block">Membuat Folder pada Folder yang aktif.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="btn-tambah" class="btn btn-primary">Buat Direktori</button>
+                        <button type="submit" id="btn-tambah" class="btn btn-primary">Buat Folder</button>
                     </div>
                 </div>
             </form>

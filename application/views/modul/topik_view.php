@@ -41,7 +41,7 @@
     						<div class="box-title">Daftar Mata Pelajaran</div>
     						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a style="cursor: pointer;" onclick="tambah()">Tambah Mata Pelajaran</a>
+    								<a class="btn btn-primary " style="cursor: pointer;" onclick="tambah()">Tambah Mata Pelajaran</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->
@@ -334,17 +334,17 @@
         $('#table-topik').DataTable({
                   "paging": true,
                   "iDisplayLength":10,
-                  "bProcessing": false,
+                  "bProcessing": true,
                   "bServerSide": true, 
                   "searching": true,
                   "aoColumns": [
-    					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
-    					{"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false},
-    					{"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"30px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
+    					{"bSearchable": true, "bSortable": true, "sWidth":"20px"},
+    					{"bSearchable": true, "bSortable": true},
+                        {"bSearchable": true, "bSortable": true},
+                        {"bSearchable": true, "bSortable": true},
+    					{"bSearchable": true, "bSortable": true},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"30px"},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"30px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "responsive": true,

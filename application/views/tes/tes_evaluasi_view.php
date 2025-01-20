@@ -31,11 +31,11 @@
                                 </select>
                             </div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Kelas</label>
                             <div class="col-sm-9">
-                                <select name="pilih-group" id="pilih-group"  onclick="refresh_table()" class="form-control input-sm">
+                                <input type="hidden" name="check" id="check" value="0">
+                                <select name="pilih-kelas" id="pilih-kelas" onclick="refresh_table()" class="form-control input-sm">
                                     <?php if(!empty($select_group)){ echo $select_group; } ?>
                                 </select>
                             </div>
@@ -69,16 +69,14 @@
 						<thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Peserta</th>
+                                <th>Kelas</th>
                                 <th>Soal</th>
                                 <th>Jawaban</th>
-                                <th>Nilai</th>
-                                <th>Evaluasi</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
@@ -187,19 +185,18 @@
                   "bServerSide": true, 
                   "searching": false,
                   "aoColumns": [
-    					{"bSearchable": false, "bSortable": false, "sWidth":"5%"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"25%"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"30%"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"30%"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"5%"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"5%"}],
+    					{"bSearchable": false, "bSortable": false},
+    					{"bSearchable": false, "bSortable": false},
+                        {"bSearchable": false, "bSortable": false, "sWidth":"40%"},
+                        {"bSearchable": false, "bSortable": false},
+                        {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "aLengthMenu": [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
                   "fnServerParams": function ( aoData ) {
                     aoData.push( { "name": "tes", "value": $('#pilih-tes').val()} );
-                    aoData.push( { "name": "group", "value": $('#pilih-group').val()} );
                     aoData.push( { "name": "urutkan", "value": $('#pilih-urutkan').val()} );
+                    aoData.push( { "name": "kelas", "value": $('#pilih-kelas').val()} );
                   }
          });          
     });

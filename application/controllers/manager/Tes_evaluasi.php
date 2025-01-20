@@ -30,37 +30,37 @@ class Tes_evaluasi extends Member_Controller {
     public function index($page=null, $id=null){
         $data['kode_menu'] = $this->kode_menu;
         $data['url'] = $this->url;
-		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;
-		if($id!=null){
-        	$query_tes = $this->cbt_tes_user_model->get_by_group_id($id);
-		}else{
-        	$query_tes = $this->cbt_tes_user_model->get_by_group();
-		}
+
+        $query_tes = $this->cbt_tes_user_model->get_by_group();
+			//echo $this->db->last_query();
         $select = '';
         if($query_tes->num_rows()>0){
         	$query_tes = $query_tes->result();
+			//var_dump($query_tes);
         	foreach ($query_tes as $temp) {
+
         		$select = $select.'<option value="'.$temp->tes_id.'">'.$temp->tes_nama.'</option>';
         	}
-        }
-        $data['select_tes'] = $select;	
-		
-        $query_group = $this->cbt_user_grup_model->get_group();
-		
+        }else{
+			$select = $select.'<option value="">Belum Ada Mapel yang dikerjakan</option>';
+		}
+        $data['select_tes'] = $select;
 
-        $selectg = '<option value="semua">Semua Kelas</option>';
+		$query_group = $this->cbt_user_grup_model->get_group();
+        $select1 = '<option value="semua">Semua Kelas</option>';
         if($query_group->num_rows()>0){
         	$query_group = $query_group->result();
         	foreach ($query_group as $temp) {
-        		$selectg = $selectg.'<option value="'.$temp->grup_id.'">'.$temp->grup_nama.'</option>';
+        		$select1 = $select1.'<option value="'.$temp->grup_id.'">'.$temp->grup_nama.'</option>';
         	}
 
         }else{
-        	$selectg = '<option value="0">Tidak Ada Kelas</option>';
+        	$select1 = '<option value="0">Tidak Ada Kelas</option>';
         }
-        $data['select_group'] = $selectg;	
+        $data['select_group'] = $select1;
         
         $this->template->display_admin($this->kelompok.'/tes_evaluasi_view', 'Evaluasi Jawaban', $data);
+
     }
 
     function simpan_nilai(){
@@ -120,8 +120,9 @@ class Tes_evaluasi extends Member_Controller {
     function get_datatable(){
 		// variable initialization
 		$tes_id = $this->input->get('tes');
-		$grup_id = $this->input->get('group');
 		$urutkan = $this->input->get('urutkan');
+		$kelas = $this->input->get('kelas');
+		
 
 		$search = "";
 		$start = 0;
@@ -137,11 +138,12 @@ class Tes_evaluasi extends Member_Controller {
 		$rows = $this->get_rows();
 
 		// run query to get user listing
-		$query = $this->cbt_tes_user_model->get_datatable_evaluasi($start, $rows, $tes_id, $urutkan, $grup_id);
+		$query = $this->cbt_tes_user_model->get_datatable_evaluasi($start, $rows, $tes_id, $urutkan, $kelas);
 		$iFilteredTotal = $query->num_rows();
 		
-		$iTotal= $this->cbt_tes_user_model->get_datatable_evaluasi_count($tes_id, $urutkan, $grup_id)->row()->hasil;
-	    
+		$iTotal= $this->cbt_tes_user_model->get_datatable_evaluasi_count($tes_id, $urutkan, $kelas)->row()->hasil;
+		//echo $this->db->last_query();
+	    //var_dump($iTotal);
 		$output = array(
 			"sEcho" => intval($_GET['sEcho']),
 	        "iTotalRecords" => $iTotal,
@@ -152,15 +154,16 @@ class Tes_evaluasi extends Member_Controller {
 	    // get result after running query and put it in array
 		$i=$start;
 		$query = $query->result();
-		//var_dump($query);
 	    foreach ($query as $temp) {			
 			$record = array();
 
+            //$siswa = $temp->user_firstname ."[".$temp->grup_nama."]";
+            $siswa = $temp->grup_nama;
             $soal = $temp->soal_detail;
             $soal = str_replace("[base_url]", base_url(), $soal);
             
 			$record[] = ++$i;
-            $record[] = $temp->user_firstname.' </br><b>['.$temp->grup_nama.']</b>';
+            $record[] = $siswa;
             $record[] = $soal;
 			// $record[] = '<div style="width:600px;"><pre style="white-space: pre-wrap;word-wrap: break-word;">'.$temp->tessoal_jawaban_text.'</pre></div>';
 
@@ -171,23 +174,18 @@ class Tes_evaluasi extends Member_Controller {
 			
 			$record[] = $jawaban;
 			
-			if($temp->tessoal_nilai==0){
-				$nilai = "<span class='label label-danger'>".$temp->tessoal_nilai."</span>";
-			}else{
-				$nilai = "<span class='label label-success'>".$temp->tessoal_nilai."</span>";
-			}
-
-			$record[] = $nilai;
-			
-            $record[] = '<a onclick="evaluasi(\''.$temp->tessoal_id.'\',\''.$temp->tes_score_wrong.'\',\''.$temp->tes_score_right.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Evaluasi</a>';
+            $record[] = '<a onclick="evaluasi(\''.$temp->tessoal_id.'\',\''.$temp->tes_score_wrong.'\',\''.$temp->tes_score_right.'\')" style="cursor: pointer;" class="btn btn-primary">Evaluasi</a>';
             
 
 			$output['aaData'][] = $record;
-			//var_dump($temp);
 		}
 		// format it to JSON, this output will be displayed in datatable
-        
-		echo json_encode($output);
+        if(!empty($tes_id)){
+			echo json_encode($output);
+		}else{
+			echo json_encode($output);
+		}
+		
 	}
 	
 	/**

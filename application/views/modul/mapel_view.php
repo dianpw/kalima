@@ -40,7 +40,7 @@
                     <div class="box-header with-border">
     						<div class="box-title">
                                 <h3>Daftar Mata Pelajaran</h3>
-    							<a class=" btn btn-primary " style="cursor: pointer;" onclick="tambah()">Tambah  Mata Pelajaran</a>
+    							<a class="btn btn-primary " style="cursor: pointer;" onclick="tambah()">Tambah Mata Pelajaran</a>
                             </div>
                     </div><!-- /.box-header -->
 

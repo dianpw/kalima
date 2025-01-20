@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url(); ?>public/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="<?php echo base_url(); ?>public/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url(); ?>public/favicon/favicon-16x16.png">
-    <link rel="manifest" href="<?php echo base_url(); ?>public/favicon/manifest.json">
+    <!--link rel="manifest" href="<?php echo base_url(); ?>public/favicon/manifest.json"-->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="<?php echo base_url(); ?>public/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -42,24 +42,22 @@
     <!-- DATA TABLES -->
     <link href="<?php echo base_url(); ?>public/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url(); ?>public/plugins/datatables/extensions/Responsive/css/dataTables.responsive.css" rel="stylesheet" type="text/css" />
-  
+    
+    <!-- jQuery 2.1.4 -->
+    <script src="<?php echo base_url(); ?>public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<?php echo base_url(); ?>public/app.js" type="text/javascript"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
-    
-    
-    <!-- jQuery 2.1.4 -->
-    <script src="<?php echo base_url(); ?>public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
     <!-- Bootstrap 3.3.2 JS -->
     <script src="<?php echo base_url(); ?>public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo base_url(); ?>public/plugins/adminlte/js/app.min.js" type="text/javascript"></script>
 
-    <script src="<?php echo base_url(); ?>public/app.js" type="text/javascript"></script>
 
     <script src="<?php echo base_url(); ?>public/plugins/datatables/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url(); ?>public/plugins/datatables/dataTables.reload.js" type="text/javascript"></script>

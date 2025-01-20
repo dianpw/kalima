@@ -18,6 +18,7 @@ class Modul_topik extends Member_Controller {
     public function index($page=null, $id=null){
         $data['kode_menu'] = $this->kode_menu;
         $data['url'] = $this->url;
+
         // Jika modul kosong, ditambah default
 		if($this->cbt_modul_model->count_all()->row()->hasil==0){
 			$data_modul['modul_nama'] = 'Default';
@@ -261,6 +262,7 @@ class Modul_topik extends Member_Controller {
 			$output['aaData'][] = $record;
 		}
 		// format it to JSON, this output will be displayed in datatable
+        
 		echo json_encode($output);
 	}
 	

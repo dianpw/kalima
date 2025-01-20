@@ -46,7 +46,8 @@
     					<div class="box-title">Daftar Soal <span id="judul-daftar-soal"></span></div>
                         <div class="box-tools pull-right">
                             <div class="dropdown pull-right">
-                                <a style="cursor: pointer;" onclick="cetak_soal()">Cetak Daftar Soal</a>
+                                
+    							<a class="btn btn-primary " style="cursor: pointer;" onclick="cetak_soal()">Cetak Daftar Soal</a>
                             </div>
                         </div>
                     </div><!-- /.box-header -->

@@ -87,12 +87,4 @@ class Mapel_model extends CI_Model{
                  ->from($this->table);
         return $this->db->get();
 	}
-
-    function get_mapel($id){
-        //SELECT topik_nama FROM `cbt_topik` WHERE topik_id='35';
-        $this->db->select('topik_nama')
-                 ->from('cbt_topik')
-                 ->where('topik_id='.$id);
-        return $this->db->get();
-    }
 }

@@ -128,7 +128,7 @@
                         <div class="box-title">Daftar Soal <span id="judul-daftar-soal"></span></div>
                         <div class="box-tools pull-right">
                             <div class="dropdown pull-right">
-                                <a style="cursor: pointer;" onclick="refresh_table()">Refresh Data Soal</a>
+                                <a class="btn btn-primary " style="cursor: pointer;" onclick="refresh_table()">Refresh Data Soal</a>
                             </div>
                         </div>
                     </div><!-- /.box-header -->
@@ -531,10 +531,10 @@
                   "bServerSide": true, 
                   "searching": true,
                   "aoColumns": [
-                        {"bSearchable": false, "bSortable": false, "sWidth":"20px"},
-                        {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"50px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"200px"}],
+                        {"bSearchable": true, "bSortable": true, "sWidth":"20px"},
+                        {"bSearchable": true, "bSortable": true},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"50px"},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"200px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "fnServerParams": function ( aoData ) {
@@ -548,11 +548,11 @@
                   "bServerSide": true, 
                   "searching": false,
                   "aoColumns": [
-                        {"bSearchable": false, "bSortable": false, "sWidth":"20px"},
-                        {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"100px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"90px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"50px"}],
+                        {"bSearchable": true, "bSortable": true, "sWidth":"20px"},
+                        {"bSearchable": true, "bSortable": true},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"100px"},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"90px"},
+                        {"bSearchable": true, "bSortable": true, "sWidth":"50px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable_image/",
                   "autoWidth": false,
                   "fnServerParams": function ( aoData ) {

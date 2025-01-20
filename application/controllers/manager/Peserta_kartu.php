@@ -53,6 +53,11 @@ class Peserta_kartu extends Member_Controller {
 				if($query_konfig->num_rows()>0){
 					$cbt_nama = $query_konfig->row()->konfigurasi_isi;
 				}
+				$query_konfig_ket = $this->cbt_konfigurasi_model->get_by_kolom_limit('konfigurasi_kode', 'cbt_keterangan', 1);
+				$cbt_ket = '';
+				if($query_konfig_ket->num_rows()>0){
+					$cbt_ket = $query_konfig_ket->row()->konfigurasi_isi;
+				}
 				
 				$query_group = $this->cbt_user_grup_model->get_by_kolom_limit('grup_id', $grup_id, 1);
 				$group = 'NULL';
@@ -63,7 +68,7 @@ class Peserta_kartu extends Member_Controller {
 				foreach($query_user AS $temp){
 					$kartu = $kartu.'
 						<div class="kartu">
-							<div class="header">'.$cbt_nama.'</div>
+							<div class="header">'.$cbt_nama.'<br/><small>'.$cbt_ket.'</small></div>
 							<hr />
 							<table>
 								<tr>

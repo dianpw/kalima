@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <div class="callout callout-info">
                 <h4>Informasi</h4>
-                <p>Pilih Grup peserta dan Tes untuk mendapatkan analisis butir soal.</p>
+                <p>Pilih Kelas peserta dan Tes untuk mendapatkan analisis butir soal.</p>
                 <p>Urutan soal yang dianalisis sesuai dengan urutan soal saat dilakukan input soal seperti pada Daftar Soal pada menu Modul.</p>
             </div>
         </div>
@@ -26,7 +26,7 @@
 		<div class="col-sm-12">
 			<div class="box">
 				<div class="box-header with-border">
-					<div class="box-title">Pilih Grup dan Tes</div>
+					<div class="box-title">Pilih Kelas dan Tes</div>
 				</div><!-- /.box-header -->
 					
 				<div class="box-body">
@@ -37,7 +37,7 @@
 							<select name="pilih-grup" id="pilih-grup" class="form-control input-sm">
 								<?php if(!empty($select_group)){ echo $select_group; } ?>
 							</select>
-							<span class="help-block">Pilih Grup yang akan dianalisis soalnya</span>
+							<span class="help-block">Pilih Kelas yang akan dianalisis soalnya</span>
 						</div>
 					</div>
 					<div class="col-md-6">

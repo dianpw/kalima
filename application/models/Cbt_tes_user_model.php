@@ -112,43 +112,32 @@ class Cbt_tes_user_model extends CI_Model{
         return $this->db->get();
     }
 
-    function get_by_group_id($id){
-        //cbt_tes_user
-        //SELECT * FROM `cbt_tes_user` JOIN cbt_tes_topik_set ON cbt_tes_user.tesuser_tes_id=cbt_tes_topik_set.tset_tes_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id WHERE cbt_tes_topik_set.tset_topik_id='35' GROUP BY cbt_tes_user.tesuser_id ORDER BY cbt_tes.tes_id DESC;
-        //$str = "35,18,36";
-        $data= explode(",",$id);
-        $whr='';
-        $i=0;
-        $x=count($data);
-        if($data==""){
-        }else{
-            foreach($data as $mapel) {
-                $whr .=' cbt_tes_topik_set.tset_topik_id like "'.$mapel.'"';
-                if($i==($x-1)){ 
-                }else{
-                    $whr .=' or ';                
-                }
-                $i++;
-            }
-        }
-        //var_dump($whr);
-        $this->db->where($whr)
-                ->from($this->table)
-                ->join('cbt_tes_topik_set', 'cbt_tes_user.tesuser_tes_id=cbt_tes_topik_set.tset_tes_id')
-                ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id')
-                ->group_by('tesuser_tes_id')
-                ->order_by('tes_id', 'DESC');
-        return $this->db->get();
-    }
-
     function get_by_group(){
-        //cbt_tes_user
-        //SELECT * FROM `cbt_tes_user` JOIN cbt_tes_topik_set ON cbt_tes_user.tesuser_tes_id=cbt_tes_topik_set.tset_tes_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id WHERE cbt_tes_topik_set.tset_topik_id='35' GROUP BY cbt_tes_user.tesuser_id ORDER BY cbt_tes.tes_id DESC;
-        $this->db->from($this->table)
-                ->join('cbt_tes_topik_set', 'cbt_tes_user.tesuser_tes_id=cbt_tes_topik_set.tset_tes_id')
-                ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id')
-                ->group_by('tesuser_tes_id')
-                ->order_by('tes_id', 'DESC');
+        //SELECT cbt_topik.topik_nama, cbt_tes_user.*, cbt_tes.*, cbt_tes_topik_set.* FROM cbt_tes_user JOIN cbt_tes ON cbt_tes.tes_id=cbt_tes_user.tesuser_tes_id JOIN cbt_tes_topik_set ON cbt_tes_topik_set.tset_tes_id=cbt_tes_user.tesuser_tes_id JOIN cbt_topik ON cbt_topik.topik_id=cbt_tes_topik_set.tset_topik_id WHERE tset_topik_id IN (48,54,39,51) GROUP BY tesuser_tes_id ORDER BY tes_id DESC;
+        $ids = array();
+        $ids = $this->db->select('user.opsi1')->from('user')->where('username', $this->session->userdata('cbt_user_id'));
+        $ids = $this->db->get()->row_array();
+
+        if($ids['opsi1']==''){
+            $this->db->select('cbt_topik.topik_nama, cbt_tes_user.*, cbt_tes.*, cbt_tes_topik_set.*')
+                 ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id')
+                 ->join('cbt_tes_topik_set', 'cbt_tes_topik_set.tset_tes_id=cbt_tes_user.tesuser_tes_id')
+                 ->join('cbt_topik', 'cbt_topik.topik_id=cbt_tes_topik_set.tset_topik_id')
+                 ->order_by('tes_id', 'DESC')
+                 ->group_by('tesuser_tes_id')
+                 ->from($this->table);
+        }else{
+            $this->db->select('cbt_topik.topik_nama, cbt_tes_user.*, cbt_tes.*, cbt_tes_topik_set.*');
+            $this->db->from($this->table);
+            $this->db->join('cbt_tes', 'cbt_tes.tes_id = cbt_tes_user.tesuser_tes_id');
+            $this->db->join('cbt_tes_topik_set', 'cbt_tes_topik_set.tset_tes_id = cbt_tes_user.tesuser_tes_id');
+            $this->db->join('cbt_topik', 'cbt_topik.topik_id = cbt_tes_topik_set.tset_topik_id');
+            $this->db->where('cbt_tes_topik_set.tset_topik_id IN('.$ids['opsi1'].')');
+            $this->db->group_by('tesuser_tes_id');
+            $this->db->order_by('tes_id', 'DESC');
+        }
+        
+        
         return $this->db->get();
     }
 	
@@ -294,55 +283,85 @@ class Cbt_tes_user_model extends CI_Model{
      *
      * @return     <type>  The datatable evaluasi.
      */
-    function get_datatable_evaluasi($start, $rows, $tes_id, $urutkan, $grup_id){
+    function get_datatable_evaluasi($start, $rows, $tes_id, $urutkan, $kelas){
         $sql = '';
         if(!empty($tes_id)){
             $sql = ' AND tesuser_tes_id="'.$tes_id.'"';
+        
         }
-        if($grup_id!='semua'){
-            $sql = $sql.' AND user_grup_id="'.$grup_id.'"';
+        if(!empty($kelas)){
+            if($kelas=='semua'){
+
+            }else{
+                $sql = $sql.' AND cbt_user_grup.grup_id="'.$kelas.'"';
+            }
+            
         }
-        $order = 'cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC';
+
+        $order = '';
         if($urutkan=='soal'){
-            $order = 'cbt_tes_soal.tessoal_nilai ASC, tessoal_soal_id ASC, tessoal_comment ASC';
-        }elseif($urutkan=='kelas'){
-            $order = 'cbt_tes_soal.tessoal_nilai ASC, cbt_user_grup.grup_nama ASC, tessoal_comment ASC';
+            $order = 'tessoal_soal_id ASC';
         }else{
-            $order = 'cbt_tes_soal.tessoal_nilai ASC, tesuser_id ASC, tessoal_comment ASC';
+            $order = 'tesuser_id ASC';
         }
-        //SELECT cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*, cbt_user.user_firstname, cbt_user_grup.grup_nama FROM `cbt_tes_user` JOIN cbt_user ON cbt_tes_user.tesuser_user_id=cbt_user.user_id JOIN cbt_user_grup ON cbt_user.user_grup_id=cbt_user_grup.grup_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id WHERE soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL ORDER BY cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC;
-        $this->db->select('cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_user.user_firstname, cbt_user_grup.grup_nama, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*')
-                // ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
-                 ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL '.$sql.' )')
+        // SELECT cbt_tes_soal.tessoal_id, cbt_tes_user.tesuser_user_id, cbt_user.user_firstname, cbt_user_grup.grup_nama, cbt_user_grup.grup_id, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.* 
+        // FROM cbt_tes_user 
+        // JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id 
+        // JOIN cbt_user ON cbt_user.user_id=cbt_tes_user.tesuser_user_id 
+        // JOIN cbt_user_grup ON cbt_user_grup.grup_id=cbt_user.user_grup_id 
+        // JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id 
+        // JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id 
+        // WHERE (cbt_soal.soal_tipe="2" AND cbt_tes_user.tesuser_tes_id="15" AND cbt_user_grup.grup_id='117');
+
+        $this->db->select(' cbt_tes_soal.tessoal_id, cbt_tes_user.tesuser_user_id, cbt_user.user_firstname, cbt_user_grup.grup_nama, cbt_user_grup.grup_id, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*')
+                 ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
                  ->from($this->table)
-                 ->join('cbt_user', 'cbt_tes_user.tesuser_user_id=cbt_user.user_id')
-                 ->join('cbt_user_grup', 'cbt_user.user_grup_id=cbt_user_grup.grup_id')
                  ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id')
+                 ->join('cbt_user', 'cbt_user.user_id=cbt_tes_user.tesuser_user_id')
+                 ->join('cbt_user_grup', 'cbt_user_grup.grup_id=cbt_user.user_grup_id')
                  ->join('cbt_tes_soal', 'cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id')
                  ->join('cbt_soal', 'cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id')
                  ->order_by($order)
                  ->limit($rows, $start);
         return $this->db->get();
+        
     }
     
-    function get_datatable_evaluasi_count($tes_id, $order, $grup_id){
+    function get_datatable_evaluasi_count($tes, $urutkan, $kelas){
+        
+		
         $sql = '';
-        if(!empty($tes_id)){
-            $sql = ' AND tesuser_tes_id="'.$tes_id.'"';
+        if(!empty($tes)){
+            $sql = ' AND cbt_tes_user.tesuser_tes_id="'.$tes.'"';
         }
-        if($grup_id!='semua'){
-            $sql = $sql.' AND user_grup_id="'.$grup_id.'"';
+        if(!empty($kelas)){
+            if($kelas=='semua'){
+
+            }else{
+                $sql = $sql.' AND cbt_user_grup.grup_id="'.$kelas.'"';
+            }
+            
         }
-        //SELECT cbt_tes_soal.tessoal_id, cbt_tes_soal.tessoal_nilai, cbt_tes_soal.tessoal_jawaban_text, cbt_tes.*, cbt_soal.*, cbt_user.user_firstname, cbt_user_grup.grup_nama FROM `cbt_tes_user` JOIN cbt_user ON cbt_tes_user.tesuser_user_id=cbt_user.user_id JOIN cbt_user_grup ON cbt_user.user_grup_id=cbt_user_grup.grup_id JOIN cbt_tes ON cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id JOIN cbt_tes_soal ON cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id WHERE soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL ORDER BY cbt_tes_soal.tessoal_nilai ASC, tessoal_comment ASC;
-        $this->db->select('COUNT(*) AS hasil')
-                 // ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
-                  ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL '.$sql.' )')
-                 ->join('cbt_tes_soal', 'cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id')
-                 ->join('cbt_user', 'cbt_tes_user.tesuser_user_id=cbt_user.user_id')
-                 ->join('cbt_user_grup', 'cbt_user.user_grup_id=cbt_user_grup.grup_id')
-                 ->join('cbt_soal', 'cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id')
-                 ->from($this->table);
+        
+        $order = '';
+        if($urutkan=='soal'){
+            $order = 'tessoal_soal_id ASC';
+        }else{
+            $order = 'tesuser_id ASC';
+        }
+        
+        $this->db->select('COUNT(cbt_tes_soal.tessoal_jawaban_text) AS hasil')
+                ->where('(soal_tipe="2" AND tessoal_jawaban_text IS NOT NULL AND tessoal_comment IS NULL '.$sql.' )')
+                ->from($this->table)
+                ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id')
+                ->join('cbt_user', 'cbt_user.user_id=cbt_tes_user.tesuser_user_id')
+                ->join('cbt_user_grup', 'cbt_user_grup.grup_id=cbt_user.user_grup_id')
+                ->join('cbt_tes_soal', 'cbt_tes_soal.tessoal_tesuser_id = cbt_tes_user.tesuser_id')
+                ->join('cbt_soal', 'cbt_tes_soal.tessoal_soal_id = cbt_soal.soal_id')
+                ->order_by($order);
         return $this->db->get();
+
+
     }
 
     /**

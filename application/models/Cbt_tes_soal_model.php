@@ -111,14 +111,20 @@ class Cbt_tes_soal_model extends CI_Model{
         //$sql = 'SELECT ROUND(((SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/COUNT(CASE WHEN cbt_soal.soal_tipe=1 THEN soal_topik_id END)*0.6)+(SUM(IF(cbt_soal.soal_tipe=2,tessoal_nilai,0))/(COUNT(CASE WHEN cbt_soal.soal_tipe=2 THEN soal_topik_id END)+COUNT(CASE WHEN cbt_soal.soal_tipe=3 THEN soal_topik_id END))+SUM(IF(cbt_soal.soal_tipe=3,tessoal_nilai,0))/(COUNT(CASE WHEN cbt_soal.soal_tipe=2 THEN soal_topik_id END)+COUNT(CASE WHEN cbt_soal.soal_tipe=3 THEN soal_topik_id END))*0.4))*100,0) AS hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal INNER JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
 
         $total_soal = $this->db->query('SELECT COUNT(*) AS total_soal FROM cbt_tes_soal WHERE tessoal_tesuser_id="'.$tessoal_id.'"')->row()->total_soal;
+        
         $pilgan = $this->db->query('SELECT COUNT(CASE WHEN cbt_soal.soal_tipe=1 THEN soal_topik_id END) AS pilgan FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"')->row()->pilgan;
+
         $not_pilgan = $this->db->query('SELECT COUNT(CASE WHEN cbt_soal.soal_tipe!=1 THEN soal_topik_id END) AS not_pilgan FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"')->row()->not_pilgan;
+
         if($total_soal == $pilgan){
-            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$total_soal.',0)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
+            //jika soal terdiri hanya pilihan ganda bobot nilai 100%
+            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$total_soal.',1)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
 
         }elseif($total_soal == $not_pilgan){
-            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$total_soal.',0)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
+            //jika soal terdiri hanya pilihan ganda bobot nilai 100%
+            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$total_soal.',1)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
         }else{
+            //jika soal terdiri dari pilihan ganda dan esay maka bobot nilai pilgan adalah 60% dan esay 40%
             $sql = 'SELECT round(((SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$pilgan.'*0.6) + (SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$not_pilgan.'*0.4))*100,0) as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
         }
         return $this->db->query($sql);

@@ -39,7 +39,7 @@
                     <div class="box-title">Import Soal dari Word</div>
 					<div class="box-tools pull-right">
 						<div class="dropdown pull-right">
-							<a href="<?php echo base_url(); ?>public/form/form-soal-ganda.docx">Form Word Soal Pilihan Ganda</a>
+							<a class="btn btn-primary " href="<?php echo base_url(); ?>public/form/form-soal-ganda.docx">Form Word Soal Pilihan Ganda</a>
     					</div>
     				</div>
                 </div><!-- /.box-header -->

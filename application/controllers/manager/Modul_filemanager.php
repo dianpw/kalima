@@ -8,7 +8,7 @@ class Modul_filemanager extends Member_Controller {
     function __construct(){
 		parent:: __construct();
 		$this->load->model('cbt_modul_model');
-		$this->load->model('mapel_model');
+		$this->load->model('cbt_topik_model');
 		$this->load->helper('directory');
 		$this->load->helper('file');
 
@@ -117,7 +117,6 @@ class Modul_filemanager extends Member_Controller {
     }
 
     function get_datatable(){
-		$id = $this->users_model->get_login_info($this->session->userdata('cbt_user_id'))->opsi1;				
     	$posisi = $this->input->get('posisi');
 
 		// variable initialization
@@ -136,8 +135,9 @@ class Modul_filemanager extends Member_Controller {
 
 		// run query to get user listing
 		$posisi = $this->config->item('upload_path').'/'.$posisi;
+		
 		$query = directory_map($posisi, 1);
-		//var_dump($query);		
+		//var_dump($query);
 
 	    // get result after running query and put it in array
 	    $iTotal = 0;
@@ -150,60 +150,66 @@ class Modul_filemanager extends Member_Controller {
 	        "aaData" => array()
 	    );
 		
-	    foreach ($query as $temp) {	
-			$record = array();
-			$direct = explode("mapel_",$temp);
-			if(isset($direct[1])){ $dir= str_replace("\\","", $direct[1]);}else{$dir=0;}
-
-			$temp = str_replace("\\","", $temp);
+	    foreach ($query as $temp) {		
+			//$id=$temp;
+			//var_dump($temp);
 			
+			// $id = str_replace("\\","", explode("mapel_", $temp));
+			// $id=$id['1'];
+			// var_dump($id['1']);
+			// $mapel = $this->cbt_topik_model->getMapelBy($id['1']);	
+			$record = array();
+
+			$temp = str_replace("/","", $temp);
+            
 			$record[] = ++$i;
 			$is_dir=0;
 			$is_image=0;
 			$info = pathinfo($temp);
 
 			if(is_dir($posisi.'/'.$temp)){
-				$data= explode("_",$temp);
-				$d = str_replace("/","", $dir);
-				$mapel = $this->mapel_model->get_mapel($d);
-				$mpl = $mapel->row();
-				$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"> <b>MAPEL '.$mpl->topik_nama.'</b></a>';
-				//$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"> <b>Mapel '.$temp.'</b></a>';
-				$is_dir=1;
-			}else{
-				if($info['extension']=='jpg' or $info['extension']=='png' or $info['extension']=='jpeg'){
-					$record[] = '<a style="cursor:pointer;" onclick="open_image(\''.$temp.'\')">'.$temp.'</a>';
-					$is_image=1;
-				}else{
-					$record[] = $temp;
-				}
-			}
+            	$record[] = '<a style="cursor:pointer;" onclick="open_dir(\''.$temp.'\')"><b>'.$temp.'</b></a>';
+            	$is_dir=1;
+        	}else{
+        		if($info['extension']=='jpg' or $info['extension']=='png' or $info['extension']=='jpeg'){
+            		$record[] = '<a style="cursor:pointer;" onclick="open_image(\''.$temp.'\')">'.$temp.'</a>';
+            		$is_image=1;
+            	}else{
+            		$record[] = $temp;
+            	}
+        	}
 
-			$file_info = get_file_info($posisi.'/'.$temp);
+            $file_info = get_file_info($posisi.'/'.$temp);
 
-			if($is_dir==1){
-				$record[] = 'Direktori';
-			}else{
-				if($is_image==1){
-					$record[] = '<a style="cursor:pointer;" onclick="open_image(\''.$temp.'\')"><img src="'.base_url().$posisi.'/'.$temp.'" height="50" /></a>';
-				}else{
-					$record[] = 'File bukan gambar';
-				}
-			}
+            if($is_dir==1){
+				//var_dump($id_mapel);
+				$id_mapel = implode("", explode("mapel_", $temp));
+				$id = str_replace("/","", $id_mapel);
+				//var_dump($id);
+				$mapel = $this->cbt_topik_model->getMapelBy($id_mapel);
+            	$record[] = 'Folder <b>'.@$mapel['topik_nama'].'</b>';
+            }else{
+            	if($is_image==1){
+            		$record[] = '<a style="cursor:pointer;" onclick="open_image(\''.$temp.'\')"><img src="'.base_url().$posisi.'/'.$temp.'" height="50" /></a>';
+            	}else{
+            		$record[] = 'File bukan gambar';
+            	}
+            }
 
-			$record[] = date('Y-m-d H:i:s', $file_info['date']);
-			$record[] = '<div style="text-align:right;">'.number_format($file_info['size']).' B</div>';
-			$record[] = '<a onclick="hapus_file(\''.$temp.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Hapus</a>';
+            $record[] = date('Y-m-d H:i:s', $file_info['date']);
+            $record[] = '<div style="text-align:right;">'.number_format($file_info['size']).' B</div>';
+            $record[] = '<a onclick="hapus_file(\''.$temp.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Hapus</a>';
+
 			$output['aaData'][] = $record;
 
 			$iTotal++;
 		}
-//var_dump($file_info['name']);
 
 		$output['iTotalRecords'] = $iTotal;
 		$output['iTotalDisplayRecords'] = $iTotal;
         
 		echo json_encode($output);
+		//var_dump(json_encode($output));
 	}
 	
 	/**

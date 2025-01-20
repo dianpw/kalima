@@ -42,7 +42,7 @@
                         <div class="box-body">
                             <div id="form-pesan"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Jawaban</label>
+                                <label class="col-sm-2 control-label">Isi Jawaban</label>
                                 <div class="col-sm-10">
                                     <input type="hidden" name="tambah-soal-id" id="tambah-soal-id" value="<?php if(!empty($id_soal)){ echo $id_soal; } ?>">
                                     <input type="hidden" name="tambah-jawaban-id" id="tambah-jawaban-id" >
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Jawaban</label>
+                                <label class="col-sm-2 control-label">Status Jawaban</label>
                                 <div class="col-sm-4">
                                     <select class="form-control input-sm" id="tambah-benar" name="tambah-benar">
                                         <option value="0">Salah</option>

@@ -19,7 +19,7 @@
     						<div class="box-title">Data User</div>
     						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a href="<?php echo current_url(); ?>/index/add">Tambah User</a>
+    								<a class="btn btn-primary" href="<?php echo current_url(); ?>/index/add">Tambah User</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->
@@ -59,11 +59,12 @@
 <script lang="javascript">
     $(function(){
         $('#table-user').DataTable({
-                  "paging": true,
-                  "iDisplayLength":10,
-                  "bProcessing": false,
+                  "sAjaxSource": "<?= current_url();?>/get_all_user/",
+                  "bProcessing": true,
                   "bServerSide": true, 
+                  "paging": true,
                   "searching": true,
+                  "iDisplayLength":10,
                   "aoColumns": [
     					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
     					{"bSearchable": false, "bSortable": false, "sWidth":"40px"},
@@ -73,7 +74,6 @@
 						{"bSearchable": false, "bSortable": false},
 						{"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
-                  "sAjaxSource": "<?php echo current_url();?>/get_all_user/",
                   "autoWidth": false,
 				  "responsive": true
          });          
