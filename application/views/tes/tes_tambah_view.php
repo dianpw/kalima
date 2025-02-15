@@ -156,7 +156,9 @@
                                     <option value="3">Jawaban Singkat</option>
                                 </select>
                             </div>
+                            <input type="hidden" name="soal-kesulitan" id="soal-kesulitan" value="1">
                         </div>
+<!--
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Tingkat Kesulitan</label>
                             <div class="col-sm-9">
@@ -169,16 +171,17 @@
                                 </select>
                             </div>
                         </div>
+-->
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Jml Soal</label>
                             <div class="col-sm-9">
-                                <input type="text" name="soal-jml" id="soal-jml" class="form-control input-sm" value="2" >
+                                <input type="text" name="soal-jml" id="soal-jml" class="form-control input-sm" placeholder="40" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Jml Jawaban</label>
                             <div class="col-sm-9">
-                                <input type="text" name="soal-jml-jawaban" id="soal-jml-jawaban" class="form-control input-sm" value="3" >
+                                <input type="text" name="soal-jml-jawaban" id="soal-jml-jawaban" class="form-control input-sm" value="5" placeholder="5" >
                             </div>
                         </div>
                         <div class="form-group">
@@ -208,7 +211,7 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Mata Pelajaran</th>
+                                    <th>Data Paket Soal</th>
                                     <th></th>
                                 </tr>
                             </thead>

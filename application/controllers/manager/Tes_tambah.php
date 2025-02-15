@@ -400,23 +400,23 @@ class Tes_tambah extends Member_Controller {
             
             $ket_acak = '';
             if($temp->tset_acak_soal==1){
-                $ket_acak = $ket_acak.' Acak Soal=YA';
+                $ket_acak = $ket_acak.' Acak Soal: <b>Ya</b>';
             }else{
-                $ket_acak = $ket_acak.' Acak Soal=TDK';
+                $ket_acak = $ket_acak.' Acak Soal: <b>Tidak</b>';
             }
             if($temp->tset_acak_jawaban==1){
-                $ket_acak = $ket_acak.'; Acak JWB=YA';
+                $ket_acak = $ket_acak.'<br />Acak Jawaban: <b>Ya</b>';
             }else{
-                $ket_acak = $ket_acak.'; Acak JWB=TDK';
+                $ket_acak = $ket_acak.'<br />Acak Jawaban: <b>Tidak</b>';
             }
 			
 			$query_topik = $this->cbt_topik_model->get_by_kolom_limit('topik_id', $temp->tset_topik_id, 1)->row();
 			$query_modul = $this->cbt_modul_model->get_by_kolom_limit('modul_id', $query_topik->topik_modul_id, 1)->row();
 			
 			if(!empty($query_modul->modul_nama)){
-				$record[] = 'Modul '.$query_modul->modul_nama.'<br />'.$query_topik->topik_nama.' ['.$temp->tset_jumlah.'] ['.$temp->tset_jawaban.']'.$ket_acak;
+				$record[] = 'Modul: <b>'.$query_modul->modul_nama.'</b><br />Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Jumlah Soal: <b>'.$temp->tset_jumlah.' Soal</b><br /> Jumlah Pilihan Jawaban: <b>'.$temp->tset_jawaban.' Pilihan Jawaban</b><br />'.$ket_acak;
 			}else{
-				$record[] = $query_topik->topik_nama.' ['.$temp->tset_jumlah.'] ['.$temp->tset_jawaban.']'.$ket_acak;
+				$record[] = 'Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Jumlah Soal: <b>'.$temp->tset_jumlah. ' Soal</b><br /> Jumlah Pilihan Jawaban: <b>'.$temp->tset_jawaban.' Pilihan Jawaban</b><br />'.$ket_acak;
 			}
             $record[] = '<a onclick="hapus_soal(\''.$temp->tset_id.'\')" title="Hapus Daftar Soal" style="cursor: pointer;" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>';
 
