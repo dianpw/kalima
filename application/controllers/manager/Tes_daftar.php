@@ -178,20 +178,20 @@ class Tes_daftar extends Member_Controller {
 					
 					$ket_acak = '';
 					if($topik->tset_acak_soal==1){
-						$ket_acak = $ket_acak.' Acak Soal=YA';
+						$ket_acak = $ket_acak.' Acak Soal: <b>Ya</b>';
 					}else{
-						$ket_acak = $ket_acak.' Acak Soal=TDK';
+						$ket_acak = $ket_acak.' Acak Soal: <b>Tidak</b>';
 					}
 					if($topik->tset_acak_jawaban==1){
-						$ket_acak = $ket_acak.'; Acak JWB=YA';
+						$ket_acak = $ket_acak.' | Acak Jawaban: <b>Ya</b>';
 					}else{
-						$ket_acak = $ket_acak.'; Acak JWB=TDK';
+						$ket_acak = $ket_acak.' | Acak Jawaban: <b>Tidak</b>';
 					}
 					
 					if(empty($data_soal)){
-						$data_soal = '['.$query_modul->modul_nama.'] '.$query_topik->topik_nama.' ['.$topik->tset_jumlah.'] ['.$topik->tset_jawaban.']'.$ket_acak;
+						$data_soal = 'Modul: <b>'.$query_modul->modul_nama.'</b> | Mapel: <b>'.$query_topik->topik_nama.'</b> |  Jumlah Soal: <b>'.$topik->tset_jumlah.' Soal</b> | Jumlah Pilihan Jawaban: <b>'.$topik->tset_jawaban.' Pilihan Jawaban</b> | '.$ket_acak;
 					}else{
-						$data_soal = $data_soal.'<br />'.'['.$query_modul->modul_nama.'] '.$query_topik->topik_nama.' ['.$topik->tset_jumlah.'] ['.$topik->tset_jawaban.']'.$ket_acak;
+						$data_soal = $data_soal.'<br />'.'Modul: <b>'.$query_modul->modul_nama.'</b><br />Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Jumlah Soal: <b>'.$topik->tset_jumlah.' Soal</b><br /> Jumlah Pilihan Jawaban: <b>'.$topik->tset_jawaban.' Pilihan Jawaban</b><br />'.$ket_acak;
 					}
 				}
 				

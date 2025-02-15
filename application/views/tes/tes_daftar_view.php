@@ -19,7 +19,7 @@
 						<div class="box-title">Daftar Tes</div>
     					<div class="box-tools pull-right">
 							<div class="dropdown pull-right">
-								<a href="<?php echo site_url(); ?>/manager/tes_tambah">Tambah Tes</a>
+								<a class="btn btn-primary " href="<?php echo site_url(); ?>/manager/tes_tambah">Tambah Tes</a>
     						</div>
     					</div>
                     </div><!-- /.box-header -->
