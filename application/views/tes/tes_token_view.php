@@ -79,7 +79,7 @@
         <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
-    					<div class="box-title">Daftar Token Hari Ini</div>
+    					<div class="box-title">Daftar Token</div>
                     </div><!-- /.box-header -->
 
                     <div class="box-body">
@@ -91,6 +91,8 @@
                                     <th>Waktu Generate</th>
                                     <th>Masa Aktif</th>
 									<th>Tes</th>
+                                    <th>Copy Detail Token </th>
+									<th>User</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,6 +100,8 @@
                                     <td> </td>
 									<td> </td>
 									<td> </td>
+									<td> </td>
+                                    <td> </td>
                                     <td> </td>
                                     <td> </td>
                                 </tr>
@@ -234,6 +238,8 @@
     					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
     					{"bSearchable": false, "bSortable": false},
     					{"bSearchable": false, "bSortable": false},
+    					{"bSearchable": false, "bSortable": false},
+						{"bSearchable": false, "bSortable": false},
 						{"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",

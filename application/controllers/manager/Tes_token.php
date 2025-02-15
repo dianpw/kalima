@@ -138,29 +138,38 @@ class Tes_token extends Member_Controller {
 	    // get result after running query and put it in array
 		$i=$start;
 		$query = $query->result();
-	    foreach ($query as $temp) {			
+		//var_dump($query);
+	    foreach ($query as $temp) {	
+				
 			$record = array();
-            
+            $token = $temp->token_isi;
+			$token_ts = $temp->token_ts;
 			$record[] = ++$i;
-            $record[] = $temp->token_isi;
-            $record[] = $temp->token_ts;
-            if($temp->token_aktif==1){
+            $record[] = $token;
+            $record[] = $token_ts;
+			if($temp->token_aktif==1){
                 $record[] = '1 Hari';
+				$masa_aktif = 1440;
+				$berlaku  =  date('Y-m-d H:i:s' , strtotime( '+'.$masa_aktif.' minutes' , strtotime($token_ts)));
             }else{
                 $record[] = $temp->token_aktif.' Menit';
-            }
-			
+				$masa_aktif = $temp->token_aktif;
+				$berlaku  =  date('H:i:s' , strtotime( '+'.$masa_aktif.' minutes' , strtotime($token_ts)));
+            }	
 			if($temp->token_tes_id==0){
-                $record[] = 'Semua Tes';
+                $mapel = 'Semua Tes';
             }else{
 				$query_tes = $this->cbt_tes_model->get_by_kolom_limit('tes_id', $temp->token_tes_id, 1);
 				if($query_tes->num_rows()>0){
 					$query_tes = $query_tes->row();
-					$record[] = $query_tes->tes_nama;
+					$mapel = $query_tes->tes_nama;
 				}else{
-					$record[] = 'Spesifik Tes';
+					$mapel = 'Spesifik Tes';
 				}
             }
+			$record[] = $mapel;
+            $record[] = 'Token: <b>'.$token.'</b><br>Berlaku Hingga: <b>'.$berlaku.'</b><br>Mapel: <b>'.$mapel.'</b>';
+            $record[] = $temp->nama;
 
 			$output['aaData'][] = $record;
 		}

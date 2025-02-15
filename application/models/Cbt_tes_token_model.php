@@ -80,7 +80,8 @@ class Cbt_tes_token_model extends CI_Model{
     }
 	
 	function get_datatable($start, $rows, $kolom, $isi, $username){
-		$this->db->where('('.$kolom.' LIKE "%'.$isi.'%" AND username="'.$username.'")')
+		//$this->db->where('('.$kolom.' LIKE "%'.$isi.'%" AND username="'.$username.'")')
+		$this->db->where('('.$kolom.' LIKE "%'.$isi.'%")')
                  ->from($this->table)
 				 ->join('user', 'cbt_tes_token.token_user_id = user.id')
 				 ->order_by('token_id', 'DESC')
@@ -90,7 +91,8 @@ class Cbt_tes_token_model extends CI_Model{
     
     function get_datatable_count($kolom, $isi, $username){
 		$this->db->select('COUNT(*) AS hasil')
-                 ->where('('.$kolom.' LIKE "%'.$isi.'%" AND username="'.$username.'")')
+                 //->where('('.$kolom.' LIKE "%'.$isi.'%" AND username="'.$username.'")')
+                 ->where('('.$kolom.' LIKE "%'.$isi.'%")')
                  ->from($this->table)
 				 ->join('user', 'cbt_tes_token.token_user_id = user.id');
         return $this->db->get();
