@@ -87,7 +87,9 @@
                                         <option value="2">Esai</option>
                                         <option value="3">Jawaban Singkat</option>
                                     </select>
+                                    <input type="hidden" class="form-control input-sm" id="tambah-kesulitan" name="tambah-kesulitan" value="1">
                                 </div>
+                                <!--
                                 <label class="col-sm-2 control-label">Tingkat Kesulitan</label>
                                 <div class="col-sm-4">
                                     <select class="form-control input-sm" id="tambah-kesulitan" name="tambah-kesulitan">
@@ -97,7 +99,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
-                                </div>
+                                </div>-->
                             </div>
                             <div class="form-group hide" id="form-tambah-jawaban">
                                 <label class="col-sm-2 control-label">Kunci Jawaban Singkat</label>
