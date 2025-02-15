@@ -5,6 +5,7 @@
     <title><?php if(!empty($site_name)){ echo $site_name; } ?> | <?php echo $title; ?></title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content='width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes' name='viewport'>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 	  <meta name="description" content="Aplikasi KALIMA TEST">
 	  <meta name="keywords" content="Aplikasi KALIMA TEST">
     <meta name="author" content="Dian Purwanto">
