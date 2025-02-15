@@ -79,7 +79,7 @@
     						<div class="box-title">Data File : <a style="cursor:pointer;" onclick="open_home_dir()">Uploads</a><span id="posisi-file-judul"></span></div>
     						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a style="cursor: pointer;" onclick="refresh_table()">Refresh Data</a>
+    								<a class="btn btn-primary " style="cursor: pointer;" onclick="refresh_table()">Refresh Data</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->
@@ -286,7 +286,7 @@
 
         $('#table-file').DataTable({
                   "bPaginate": false,
-                  "bProcessing": false,
+                  "bProcessing": true,
                   "bServerSide": true, 
                   "searching": false,
                   "aoColumns": [
