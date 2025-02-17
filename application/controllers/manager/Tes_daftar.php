@@ -145,29 +145,11 @@ class Tes_daftar extends Member_Controller {
 	    // get result after running query and put it in array
 		$i=$start;
 		$query = $query->result();
+		//var_dump($query);
 	    foreach ($query as $temp) {			
 			$record = array();
-            
+            //nomor
 			$record[] = ++$i;
-            $record[] = $temp->tes_nama;
-            $record[] = $temp->tes_max_score;
-            $record[] = $temp->tes_begin_time;
-            $record[] = $temp->tes_end_time;
-            $record[] = $temp->tes_duration_time.' Menit';
-            $record[] = $temp->tes_score_right;
-
-            if($temp->tes_results_to_users==1){
-            	$record[] = 'Ya';
-            }else{
-            	$record[] = 'Tidak';
-            }
-
-            if($temp->tes_token==1){
-            	$record[] = 'Ya';
-            }else{
-            	$record[] = 'Tidak';
-            }
-
 			$query_topik = $this->cbt_tes_topik_set_model->get_by_kolom('tset_tes_id', $temp->tes_id);
 			if($query_topik->num_rows()>0){
 				$query_topik = $query_topik->result();
@@ -178,27 +160,46 @@ class Tes_daftar extends Member_Controller {
 					
 					$ket_acak = '';
 					if($topik->tset_acak_soal==1){
-						$ket_acak = $ket_acak.' Acak Soal: <b>Ya</b>';
+						$ket_acak = $ket_acak.'<br>Acak Soal: <b>Ya</b>';
 					}else{
-						$ket_acak = $ket_acak.' Acak Soal: <b>Tidak</b>';
+						$ket_acak = $ket_acak.'<br>Acak Soal: <b>Tidak</b>';
 					}
 					if($topik->tset_acak_jawaban==1){
-						$ket_acak = $ket_acak.' | Acak Jawaban: <b>Ya</b>';
+						$ket_acak = $ket_acak.'<br>Acak Jwb: <b>Ya</b>';
 					}else{
-						$ket_acak = $ket_acak.' | Acak Jawaban: <b>Tidak</b>';
+						$ket_acak = $ket_acak.'<br>Acak Jwb: <b>Tidak</b>';
 					}
 					
 					if(empty($data_soal)){
-						$data_soal = 'Modul: <b>'.$query_modul->modul_nama.'</b> | Mapel: <b>'.$query_topik->topik_nama.'</b> |  Jumlah Soal: <b>'.$topik->tset_jumlah.' Soal</b> | Jumlah Pilihan Jawaban: <b>'.$topik->tset_jawaban.' Pilihan Jawaban</b> | '.$ket_acak;
-					}else{
-						$data_soal = $data_soal.'<br />'.'Modul: <b>'.$query_modul->modul_nama.'</b><br />Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Jumlah Soal: <b>'.$topik->tset_jumlah.' Soal</b><br /> Jumlah Pilihan Jawaban: <b>'.$topik->tset_jawaban.' Pilihan Jawaban</b><br />'.$ket_acak;
+						$data_soal = '<b>'.$query_modul->modul_nama.' - '.$temp->tes_nama.'</b> <br> Mapel: <b>'.$query_topik->topik_nama.'</b><br> Soal: <b>'.$topik->tset_jumlah.' Soal</b> <br> Jawaban: <b>'.$topik->tset_jawaban.' Opsi</b>';
+					}else{//$query_topik->topik_nama
+						$data_soal = $data_soal.'<br />'.'Modul: <b>'.$query_modul->modul_nama.'</b><br />Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Soal: <b>'.$topik->tset_jumlah.' Soal</b><br /> Opsi Jawaban: <b>'.$topik->tset_jawaban.' Opsi</b><br />';
 					}
 				}
-				
+				//data soal
 				$record[] = $data_soal;
 			}else{
 				$record[] = 'Belum ada soal';
 			}
+			//Waktu
+            $record[] = 'Durasi: <br><b>'.$temp->tes_duration_time.' Menit</b><br>Mulai Tes: <br><b>'.$temp->tes_begin_time.'</b>';
+			//Nilai
+            $record[] = 'Poin Maks:<br><b>'.$temp->tes_max_score.'</b><br> Poin Dasar: <br><b>'.$temp->tes_score_right.'</b>';
+
+            if($temp->tes_results_to_users==1){
+            	$tampil_hasil = 'Ya';
+            }else{
+            	$tampil_hasil = 'Tidak';
+            }
+
+            if($temp->tes_token==1){
+            	$token = 'Ya';
+            }else{
+            	$token = 'Tidak';
+            }
+			//Pengaturan
+			$record[] = 'Tampil Nilai: <b>'.$tampil_hasil.'</b><br>Token: <b>'.$token.'</b>'.$ket_acak;
+
             
 			$query_grup = $this->cbt_tesgrup_model->get_by_tes_id($temp->tes_id);
 			if($query_grup->num_rows()>0){

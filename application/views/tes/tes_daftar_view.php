@@ -33,29 +33,18 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th class="all">Nama Tes</th>
-                                    <th>Max Score</th>
-                                    <th class="all">Waktu Mulai</th>
-                                    <th>Waktu Selesai</th>
-                                    <th class="none">Waktu Tes</th>
-                                    <th class="none">Poin Dasar</th>
-                                    <th class="none">Tunjukkan Hasil</th>
-                                    <th class="none">Token</th>
-									<th class="none">Soal</th>
-									<th class="none">Kelas</th>
-                                    <th class="all"></th>
-                                    <th class="all"></th>
+                                    <th class="all">Data Tes</th>
+                                    <th class="all">Waktu</th>
+                                    <th class="all">Nilai</th>
+                                    <th class="all">Pengaturan</th>
+									<th class="all">Kelas</th>
+                                    <th class="all" colspan="3">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td> </td>
-                                    <td> </td>
-                                    <td> </td>
 									<td> </td>
-									<td> </td>
-                                    <td> </td>
-                                    <td> </td>
                                     <td> </td>
                                     <td> </td>
 									<td> </td>
@@ -232,19 +221,14 @@
                   "bServerSide": true, 
                   "searching": true,
                   "aoColumns": [
-    					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
+    					{"bSearchable": false, "bSortable": false},
+    					{"bSearchable": false, "bSortable": false, "sWidth":"30%"},
+                        {"bSearchable": false, "bSortable": false},
     					{"bSearchable": false, "bSortable": false},
                         {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"150px"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"150px"},
+                        {"bSearchable": false, "bSortable": false, "sWidth":"30%"},
                         {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false},
-						{"bSearchable": false, "bSortable": false},
-						{"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"30px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"20px"}],
+                        {"bSearchable": false, "bSortable": false}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "responsive": true
