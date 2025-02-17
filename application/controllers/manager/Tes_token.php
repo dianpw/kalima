@@ -168,7 +168,7 @@ class Tes_token extends Member_Controller {
 				}
             }
 			$record[] = $mapel;
-            $record[] = 'Token: <b>'.$token.'</b><br>Berlaku Hingga: <b>'.$berlaku.'</b><br>Mapel: <b>'.$mapel.'</b>';
+            $record[] = 'Token: <b>'.$token.'</b><br>Berlaku Hingga: <b>'.$berlaku.'</b><br>Berlaku Untuk: <b>'.$mapel.'</b>';
             $record[] = $temp->nama;
 
 			$output['aaData'][] = $record;
