@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Opsi 1</label>
+                                    <label class="col-sm-3 control-label">Kode Mapel</label>
                                     <div class="col-sm-9">
                                         <div class="input-group input-group-sm">
                                             <input type="text" class="form-control input-sm" value="<?php if(!empty($opsi1)){ echo $opsi1; } ?>" id="opsi1" name="opsi1" placeholder="Daftar Mata Pelajaran yang dikelola user" readonly>
@@ -70,9 +70,17 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Opsi 2</label>
+                                    <label class="col-sm-3 control-label">Daftar Mata Pelajaran</label>
                                     <div class="col-sm-5">
-                                        <input type="text" class="form-control input-sm" value="<?php if(!empty($opsi2)){ echo $opsi2; } ?>" id="opsi2" name="opsi2" placeholder="Opsi 2">
+                                        <span>
+                                            <?php
+                                                if(!empty($topik_nama)){
+                                                    echo $topik_nama;
+                                                }else{
+                                                    echo 'semua mapel';
+                                                }
+                                            ?>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -88,9 +96,12 @@
             </div>
             
             <div class="box-footer">
+                <div class="pull-left">
+                    <button type="button" id="back" class="btn btn-warning" onclick="window.history.back()">Kembali</button>
+                </div>
                 <div class="pull-right">
-                    <button type="button" id="hapus" class="btn btn-default">Hapus</button>
-                    <button type="button" id="simpan" class="btn btn-info">Simpan</button>
+                    <button type="button" id="hapus" class="btn btn-danger">Hapus</button>
+                    <button type="button" id="simpan" class="btn btn-success">Simpan</button>
                 </div>
             </div>
         </div>

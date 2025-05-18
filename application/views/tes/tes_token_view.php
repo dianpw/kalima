@@ -24,7 +24,7 @@
     					<div class="box-title">Generate Token</div>
 						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a style="cursor: pointer;" onclick="manual()">Token Tes Manual</a>
+    								<a class="btn btn-primary" style="cursor: pointer;" onclick="manual()">Token Tes Manual</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->
@@ -47,11 +47,16 @@
                                     <select class="form-control input-sm" id="token-aktif" name="token-aktif">
                                         <option value="1">1 Hari</option>
                                         <option value="5">5 menit</option>
+                                        <option value="10">10 menit</option>
                                         <option value="15">15 menit</option>
                                         <option value="30">30 menit</option>
+                                        <option value="45">45 menit</option>
                                         <option value="60">1 Jam</option>
                                         <option value="120">2 Jam</option>
                                         <option value="240">4 Jam</option>
+                                        <option value="480">8 Jam</option>
+                                        <option value="600">10 Jam</option>
+                                        <option value="720">12 Jam</option>
                                     </select>
                                     <p class="help-block">Masa Aktif Token</p>
                                 </div>

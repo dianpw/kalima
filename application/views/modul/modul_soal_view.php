@@ -26,6 +26,7 @@
                             <label class="col-sm-3 control-label">Pilih Mata Pelajaran</label>
                             <div class="col-sm-9">
                                 <select name="topik" id="topik" class="form-control input-sm">
+                                    <option value="" disabled selected>-- Pilih Mata Pelajaran --</option>
                                     <?php if(!empty($select_topik)){ echo $select_topik; } ?>
                                 </select>
                             </div>

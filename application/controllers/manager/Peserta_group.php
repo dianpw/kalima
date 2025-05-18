@@ -8,6 +8,7 @@ class Peserta_group extends Member_Controller {
     function __construct(){
 		parent:: __construct();
 		$this->load->model('cbt_user_grup_model');
+		$this->load->model('cbt_user_model');
 		$this->load->model('cbt_tesgrup_model');
 
 		parent::cek_akses($this->kode_menu);
@@ -141,9 +142,12 @@ class Peserta_group extends Member_Controller {
 		$query = $query->result();
 	    foreach ($query as $temp) {			
 			$record = array();
+			
+			$jml_siswa = $this->cbt_user_model->count_by_kolom('user_grup_id', $temp->grup_id)->row()->hasil;
             
 			$record[] = ++$i;
             $record[] = $temp->grup_nama;
+            $record[] = $jml_siswa;
             $record[] = '<a onclick="edit(\''.$temp->grup_id.'\')" style="cursor: pointer;" class="btn btn-default btn-xs">Edit</a>';
 
 			$output['aaData'][] = $record;

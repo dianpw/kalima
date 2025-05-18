@@ -31,10 +31,8 @@
                                     <th>No.</th>
                                     <th class="all">Username</th>
                                     <th class="all">Nama</th>
-                                    <th>Level</th>
-									<th>Opsi 1</th>
-									<th>Opsi 2</th>
-									<th>Keterangan</th>
+									<th class="all">Kode Mapel, Modul & Mapel</th>
+									<th class="all">Keterangan</th>
                                     <th class="all">Action</th>
                                 </tr>
                             </thead>
@@ -45,7 +43,6 @@
                                     <td> </td>
                                     <td> </td>
                                     <td> </td>
-									<td> </td>
                                     <td> </td>
                                 </tr>
                             </tbody>
@@ -66,15 +63,13 @@
                   "searching": true,
                   "iDisplayLength":10,
                   "aoColumns": [
-    					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"40px"},
-    					{"bSearchable": false, "bSortable": false, "sWidth":"100px"},
-                        {"bSearchable": false, "bSortable": false},
-						{"bSearchable": false, "bSortable": false},
-						{"bSearchable": false, "bSortable": false},
-						{"bSearchable": false, "bSortable": false},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
-                  "autoWidth": false,
+    					{"bSearchable": true, "bSortable": true, "sWidth":"20px"},
+    					{"bSearchable": true, "bSortable": true},
+						{"bSearchable": true, "bSortable": false, "sWidth":"30px"},
+						{"bSearchable": true, "bSortable": false},
+						{"bSearchable": true, "bSortable": false},
+                        {"bSearchable": true, "bSortable": false, "sWidth":"30px"}],
+                  "autoWidth": true,
 				  "responsive": true
          });          
     });

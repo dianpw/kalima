@@ -19,7 +19,7 @@
     						<div class="box-title">Daftar Kelas</div>
     						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a style="cursor: pointer;" onclick="tambah()">Tambah Kelas</a>
+    								<a class="btn btn-primary" style="cursor: pointer;" onclick="tambah()">Tambah Kelas</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->
@@ -30,11 +30,13 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Nama Kelas</th>
+                                    <th>Jumlah Siswa</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td> </td>
                                     <td> </td>
                                     <td> </td>
                                     <td> </td>
@@ -206,7 +208,8 @@
                   "searching": true,
                   "aoColumns": [
     					{"bSearchable": false, "bSortable": false, "sWidth":"20px"},
-    					{"bSearchable": false, "bSortable": false},
+    					{"bSearchable": false, "bSortable": true},
+    					{"bSearchable": false, "bSortable": true},
                         {"bSearchable": false, "bSortable": false, "sWidth":"30px"}],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false

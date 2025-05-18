@@ -49,11 +49,12 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Nama</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-sm" autocomplete="off" id="nama" name="nama" placeholder="Nama Pengguna">
+                            <input type="text" class="form-control input-sm" autocomplete="off" id="nama" name="nama" placeholder="Nama Pengguna">
+                            <input type="hidden" class="form-control input-sm" autocomplete="off" id="opsi2" name="opsi2">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Opsi 1</label>
+                            <label class="col-sm-3 control-label">Kode Mapel</label>
                             <div class="col-sm-9">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" id="opsi1" name="opsi1" placeholder="Daftar Mata Pelajaran yang dikelola user" readonly="">
@@ -63,12 +64,6 @@
                                     </span>
                                 </div>
                                 <p class="help-block">Jika kosong, maka user dapat mengelola soal semua mata pelajaran.</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Opsi 2</label>
-                            <div class="col-sm-5">
-                                <input type="text" class="form-control input-sm" id="opsi2" name="opsi2" placeholder="Opsi 2">
                             </div>
                         </div>
                         <div class="form-group">
@@ -82,7 +77,12 @@
             </div>
             
             <div class="box-footer">
-                <button type="submit" id="btn-simpan" class="btn btn-info pull-right">Simpan</button>
+                <div class="pull-left">
+                    <button type="button" id="back" class="btn btn-warning" onclick="window.history.back()">Kembali</button>
+                </div>
+                <div class="pull-right">
+                    <button type="submit" id="btn-simpan" class="btn btn-success">Simpan</button>
+                </div>
             </div>
         </div>
     </div>

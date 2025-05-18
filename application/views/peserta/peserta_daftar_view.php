@@ -42,7 +42,7 @@
     						<div class="box-title">Daftar Peserta</div>
     						<div class="box-tools pull-right">
     							<div class="dropdown pull-right">
-    								<a style="cursor: pointer;" onclick="tambah()">Tambah Peserta</a>
+    								<a class="btn btn-primary" style="cursor: pointer;" onclick="tambah()">Tambah Peserta</a>
     							</div>
     						</div>
                     </div><!-- /.box-header -->

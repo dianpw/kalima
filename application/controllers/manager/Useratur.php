@@ -61,7 +61,8 @@ class Useratur extends Member_Controller {
                     $data['nama_lengkap'] = $temp->nama;
                     $data['level_user'] = $temp->level;
                     $data['opsi1'] = $temp->opsi1;
-                    $data['opsi2'] = $temp->opsi2;
+                    //var_dump($temp);
+                    $data['topik_nama'] = $temp->topik_nama;
                     $data['keterangan'] = $temp->keterangan;
                     
                     $query = $this->userlevel_model->get_level();
@@ -117,9 +118,7 @@ class Useratur extends Member_Controller {
                 $data_user['nama'] = $this->input->post('nama', true);
                 $data_user['level'] = $this->input->post('level', true);
                 $data_user['opsi1'] = strtoupper($this->input->post('opsi1', true));
-                $data_user['opsi2'] = strtoupper($this->input->post('opsi2', true));
                 $data_user['keterangan'] = $this->input->post('keterangan', true);
-                
                 $password = $this->input->post('password', true);
                 if($password!='kosongkosong'){
                     $data_user['password'] = sha1($password);
@@ -212,14 +211,15 @@ class Useratur extends Member_Controller {
 		$user = $query->result();
 	    foreach ($user as $temp) {			
 			$record = array();
+            $nama=$temp->nama."<br/><span class='text-bold'>[".$temp->level."]</span>"; 
+            $mapel= "<span class='text-bold'>[".$temp->opsi1."]</span><br/>".$temp->topik_nama;
             
 			$record[] = ++$i;
             $record[] = $temp->username;
-			$record[] = $temp->nama;
-            $record[] = $temp->level;
-            $record[] = $temp->opsi1;
-            $record[] = $temp->opsi2;
+			$record[] = $nama;
+            $record[] = $mapel;
             $record[] = $temp->keterangan;
+            //$record[] = $temp->opsi2;
             if($is_edit){
                 $record[] = '<a href="'.site_url('manager/useratur/index/edit/'.$temp->id).'" class="btn btn-default btn-xs">Edit</a>';
             }else{

@@ -62,7 +62,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Waktu Tes</label>
                             <div class="col-sm-9">
-                                <input type="text" name="tambah-waktu" id="tambah-waktu" class="form-control input-sm" value="30" />
+                                <input type="text" name="tambah-waktu" id="tambah-waktu" class="form-control input-sm" value="60" />
                                 <p class="help-block">Waktu tes dalam satuan menit</p>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Tunjukkan Hasil</label>
                             <div class="col-sm-9">
-                                <input type="checkbox" name="tambah-tunjukkan-hasil" id="tambah-tunjukkan-hasil" value="1" checked>
+                                <input type="checkbox" name="tambah-tunjukkan-hasil" id="tambah-tunjukkan-hasil" value="1">
                                 <p class="help-block">Menunjukkan hasil ke user saat tes sudah selesai</p>
                             </div>
                         </div>
@@ -326,7 +326,7 @@
     }
 
     $(function(){
-        $('#tambah-rentang-waktu').daterangepicker({timePicker: true, timePickerIncrement: 10, format: 'YYYY-MM-DD H:mm'});
+        $('#tambah-rentang-waktu').daterangepicker({timePicker: true, timePicker24Hour: true,timePickerIncrement: 1, format: 'YYYY-MM-DD H:mm'});
         $('#btn-tambah-selesai').click(function(){
             window.open("<?php echo site_url(); ?>/manager/tes_tambah", "_self");
         });

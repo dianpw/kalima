@@ -29,7 +29,7 @@
     					<div class="box-title">Import Peserta</div>
     					<div class="box-tools pull-right">
 							<div class="dropdown pull-right">
-								<a href="<?php echo base_url(); ?>public/form/form-data-siswa.xls">Download Form Import Siswa</a>
+								<a class="btn btn-primary" href="<?php echo base_url(); ?>public/form/form-data-siswa.xls">Download Form Import Siswa</a>
     						</div>
     					</div>
                     </div><!-- /.box-header -->

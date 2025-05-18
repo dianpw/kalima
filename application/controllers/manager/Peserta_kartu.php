@@ -74,7 +74,7 @@ class Peserta_kartu extends Member_Controller {
 								<tr>
 									<td width="95px">Nama</td>
 									<td width="5px">:</td>
-									<td width="210px">'.$temp->user_firstname.'</td>
+									<td width="210px">'.$this->singkatNama($temp->user_firstname, $maxLength = 24).'</td>
 								</tr>
 								<tr>
 									<td>Username</td>
@@ -106,5 +106,65 @@ class Peserta_kartu extends Member_Controller {
 		$data['kartu'] = $kartu;
 		
 		$this->load->view($this->kelompok.'/peserta_cetak_kartu_view', $data);
+	}
+
+	function singkatNama($nama, $maxLength = 10) {
+		// Hilangkan gelar depan dan belakang
+		$nama = preg_replace('/\b(Dr|Prof|Ir|Hj|H|S\.H|M\.\w+)\b\.?/i', '', $nama);
+		$nama = trim(preg_replace('/\s+/', ' ', $nama));
+		
+		// Jika nama sudah <= 20 karakter, kembalikan asli
+		if (strlen($nama) <= $maxLength) {
+			return $nama;
+		}
+		
+		// Pisahkan nama per kata
+		$parts = explode(' ', $nama);
+		$count = count($parts);
+		
+		// Jika hanya 1 kata, potong saja
+		if ($count == 1) {
+			return substr($nama, 0, $maxLength);
+		}
+		
+		// Mulai dengan kata pertama
+		$namaSingkat = $parts[0];
+		
+		// Jika kata pertama saja sudah >= maxLength
+		if (strlen($namaSingkat) >= $maxLength) {
+			return substr($namaSingkat, 0, $maxLength);
+		}
+		
+		// Proses kata kedua dan seterusnya
+		for ($i = 1; $i < $count; $i++) {
+			$tambahan = '';
+			
+			// Untuk kata kedua, coba pertahankan utuh dulu
+			if ($i == 1) {
+				$tambahan = ' ' . $parts[$i];
+			} 
+			// Untuk kata ketiga dst, langsung singkat
+			else {
+				$tambahan = ' ' . substr($parts[$i], 0, 1) . '.';
+			}
+			
+			// Cek apakah penambahan masih dalam batas
+			if (strlen($namaSingkat . $tambahan) <= $maxLength) {
+				$namaSingkat .= $tambahan;
+			} 
+			// Jika tidak, coba singkat kata kedua
+			else {
+				// Jika kata kedua belum disingkat, coba singkat
+				if ($i == 1) {
+					$tambahan = ' ' . substr($parts[$i], 0, 1) . '.';
+					if (strlen($namaSingkat . $tambahan) <= $maxLength) {
+						$namaSingkat .= $tambahan;
+					}
+				}
+				break;
+			}
+		}
+		
+		return $namaSingkat;
 	}
 }

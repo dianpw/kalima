@@ -114,122 +114,107 @@ class Tes_daftar extends Member_Controller {
 		echo json_encode($data);
     }
     
-    function get_datatable(){
+	function get_datatable() {
 		// variable initialization
 		$search = "";
 		$start = 0;
 		$rows = 10;
-
+	
 		// get search value (if any)
-		if (isset($_GET['sSearch']) && $_GET['sSearch'] != "" ) {
+		if (!empty($_GET['sSearch'])) {
 			$search = $_GET['sSearch'];
 		}
-
+	
 		// limit
 		$start = $this->get_start();
 		$rows = $this->get_rows();
-
+	
 		// run query to get user listing
 		$query = $this->cbt_tes_model->get_datatable($start, $rows, 'tes_nama', $search);
 		$iFilteredTotal = $query->num_rows();
 		
-		$iTotal= $this->cbt_tes_model->get_datatable_count('tes_nama', $search)->row()->hasil;
-	    
+		$iTotal = $this->cbt_tes_model->get_datatable_count('tes_nama', $search)->row()->hasil ?? 0;
+		
 		$output = array(
-			"sEcho" => intval($_GET['sEcho']),
-	        "iTotalRecords" => $iTotal,
-	        "iTotalDisplayRecords" => $iTotal,
-	        "aaData" => array()
-	    );
-
-	    // get result after running query and put it in array
-		$i=$start;
+			"sEcho" => intval($_GET['sEcho'] ?? 0),
+			"iTotalRecords" => $iTotal,
+			"iTotalDisplayRecords" => $iTotal,
+			"aaData" => array()
+		);
+	
+		$i = $start;
 		$query = $query->result();
-		//var_dump($query);
-	    foreach ($query as $temp) {			
+	
+		foreach ($query as $temp) {
 			$record = array();
-            //nomor
 			$record[] = ++$i;
+			
+			// Get topic data
 			$query_topik = $this->cbt_tes_topik_set_model->get_by_kolom('tset_tes_id', $temp->tes_id);
-			if($query_topik->num_rows()>0){
+			$data_soal = 'Belum ada soal';
+			
+			if ($query_topik->num_rows() > 0) {
 				$query_topik = $query_topik->result();
 				$data_soal = '';
-				foreach($query_topik as $topik){
+	
+				foreach ($query_topik as $topik) {
 					$query_topik = $this->cbt_topik_model->get_by_kolom_limit('topik_id', $topik->tset_topik_id, 1)->row();
-					$query_modul = $this->cbt_modul_model->get_by_kolom_limit('modul_id', $query_topik->topik_modul_id, 1)->row();
+					$query_modul = $this->cbt_modul_model->get_by_kolom_limit('modul_id', $query_topik->topik_modul_id ?? 0, 1)->row();
+					
+					$modul_nama = isset($query_modul->modul_nama) ? $query_modul->modul_nama : 'Tidak diketahui';
+					$topik_nama = isset($query_topik->topik_nama) ? $query_topik->topik_nama : 'Tidak diketahui';
 					
 					$ket_acak = '';
-					if($topik->tset_acak_soal==1){
-						$ket_acak = $ket_acak.'<br>Acak Soal: <b>Ya</b>';
-					}else{
-						$ket_acak = $ket_acak.'<br>Acak Soal: <b>Tidak</b>';
-					}
-					if($topik->tset_acak_jawaban==1){
-						$ket_acak = $ket_acak.'<br>Acak Jwb: <b>Ya</b>';
-					}else{
-						$ket_acak = $ket_acak.'<br>Acak Jwb: <b>Tidak</b>';
-					}
+					$ket_acak .= '<br>Acak Soal: <b>' . ($topik->tset_acak_soal ? 'Ya' : 'Tidak') . '</b>';
+					$ket_acak .= '<br>Acak Jwb: <b>' . ($topik->tset_acak_jawaban ? 'Ya' : 'Tidak') . '</b>';
 					
-					if(empty($data_soal)){
-						$data_soal = '<b>'.$query_modul->modul_nama.' - '.$temp->tes_nama.'</b> <br> Mapel: <b>'.$query_topik->topik_nama.'</b><br> Soal: <b>'.$topik->tset_jumlah.' Soal</b> <br> Jawaban: <b>'.$topik->tset_jawaban.' Opsi</b>';
-					}else{//$query_topik->topik_nama
-						$data_soal = $data_soal.'<br />'.'Modul: <b>'.$query_modul->modul_nama.'</b><br />Mapel: <b>'.$query_topik->topik_nama.'</b><br /> Soal: <b>'.$topik->tset_jumlah.' Soal</b><br /> Opsi Jawaban: <b>'.$topik->tset_jawaban.' Opsi</b><br />';
-					}
+					$data_soal .= '<b>' . $modul_nama . ' - ' . $temp->tes_nama . '</b> <br> Mapel: <b>' . $topik_nama . '</b><br> Soal: <b>' . ($topik->tset_jumlah ?? 0) . ' Soal</b> <br> Jawaban: <b>' . ($topik->tset_jawaban ?? 0) . ' Opsi</b>' . $ket_acak . '<br>'; 
 				}
-				//data soal
-				$record[] = $data_soal;
-			}else{
-				$record[] = 'Belum ada soal';
 			}
-			//Waktu
-            $record[] = 'Durasi: <br><b>'.$temp->tes_duration_time.' Menit</b><br>Mulai Tes: <br><b>'.$temp->tes_begin_time.'</b>';
-			//Nilai
-            $record[] = 'Poin Maks:<br><b>'.$temp->tes_max_score.'</b><br> Poin Dasar: <br><b>'.$temp->tes_score_right.'</b>';
-
-            if($temp->tes_results_to_users==1){
-            	$tampil_hasil = 'Ya';
-            }else{
-            	$tampil_hasil = 'Tidak';
-            }
-
-            if($temp->tes_token==1){
-            	$token = 'Ya';
-            }else{
-            	$token = 'Tidak';
-            }
-			//Pengaturan
-			$record[] = 'Tampil Nilai: <b>'.$tampil_hasil.'</b><br>Token: <b>'.$token.'</b>'.$ket_acak;
-
-            
-			$query_grup = $this->cbt_tesgrup_model->get_by_tes_id($temp->tes_id);
-			if($query_grup->num_rows()>0){
-				$query_grup = $query_grup->result();
-				$data_grup = '';
-				foreach($query_grup as $grup){
-					if(empty($data_grup)){
-						$data_grup = $grup->grup_nama;
-					}else{
-						$data_grup = $data_grup.', '.$grup->grup_nama;
-					}
-				}
-				$record[] = $data_grup;
-			}else{
-				$record[] = 'Belum ada grup';
-			}
+			$record[] = $data_soal;
 			
-            $record[] = '
-            	<a onclick="edit(\''.$temp->tes_id.'\')" style="cursor: pointer;" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
-            	<a onclick="hapus(\''.$temp->tes_id.'\')" style="cursor: pointer;" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></a>
-            ';
-
-            $record[] = '<input type="checkbox" name="edit-tes-id['.$temp->tes_id.']" >';
-
+			// Waktu dengan format Indonesia
+			setlocale(LC_TIME, 'id_ID.utf8');
+			$begin_time = strftime(' %H:%M </br> %d %B %Y', strtotime($temp->tes_begin_time ?? '')); 
+			$end_time = strftime(' %H:%M </br> %d %B %Y', strtotime($temp->tes_end_time ?? ''));
+			
+			$record[] = 'Durasi: <br><b>' . ($temp->tes_duration_time ?? 0) . ' Menit</b><br>Mulai Tes: <b>' . $begin_time . '</b><br>Selesai Tes: <b>' . $end_time . '</b>';
+			
+			// Nilai
+			$record[] = 'Poin Maks:<br><b>' . ($temp->tes_max_score ?? 0) . '</b><br> Poin Dasar: <br><b>' . ($temp->tes_score_right ?? 0) . '</b>';
+			
+			// Pengaturan
+			$tampil_hasil = ($temp->tes_results_to_users == 1) ? 'Ya' : 'Tidak';
+			$token = ($temp->tes_token == 1) ? 'Ya' : 'Tidak';
+			$record[] = 'Tampil Nilai: <b>' . $tampil_hasil . '</b><br>Token: <b>' . $token . '</b>';
+			
+			// Grup
+			$query_grup = $this->cbt_tesgrup_model->get_by_tes_id($temp->tes_id);
+			$data_grup = 'Belum ada grup';
+			if ($query_grup->num_rows() > 0) {
+				$query_grup = $query_grup->result();
+				$grup_nama_list = array();
+				foreach ($query_grup as $grup) {
+					$grup_nama_list[] = $grup->grup_nama;
+				}
+				$data_grup = implode(', ', $grup_nama_list);
+			}
+			$record[] = $data_grup;
+			
+			// Aksi
+			$record[] = '<a onclick="edit(\'' . $temp->tes_id . '\')" style="cursor: pointer;" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
+						 <a onclick="hapus(\'' . $temp->tes_id . '\')" style="cursor: pointer;" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>';
+			
+			// Checkbox
+			$record[] = '<input type="checkbox" name="edit-tes-id[' . $temp->tes_id . ']" >';
+			
 			$output['aaData'][] = $record;
 		}
+	
 		// format it to JSON, this output will be displayed in datatable
-        
 		echo json_encode($output);
 	}
+	
 	
 	/**
 	* funsi tambahan 

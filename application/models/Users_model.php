@@ -19,9 +19,18 @@ class Users_model extends CI_Model{
     }
     
     function get_user_by_id($id){
-        $this->db->where('id', $id)
+        /* $this->db->where('id', $id)
                  ->from('user')
-                 ->limit(1);
+                 ->limit(1); */
+        $this->db->select('u.*, t.topik_nama, 
+                CASE 
+                    WHEN u.opsi1 = "" THEN "Semua Mata Pelajaran" 
+                    ELSE GROUP_CONCAT(DISTINCT CONCAT("+ ", m.modul_nama, " - ", t.topik_nama) ORDER BY t.topik_nama SEPARATOR "<br/> ") 
+                END AS topik_nama')
+                ->from('user u')
+                ->join('cbt_topik t', 'FIND_IN_SET(t.topik_id, u.opsi1)', 'left')
+                ->join('cbt_modul m', 't.topik_modul_id = m.modul_id', 'left')
+                ->where('u.id', $id);
         return $this->db->get();
     }
 
@@ -87,25 +96,50 @@ class Users_model extends CI_Model{
 	}
     
     function get_all_user($start, $rows, $search){
-        $this->db->where('(username LIKE "%'.$search.'%" OR nama LIKE "%'.$search.'%")')
+        /* $this->db->where('(username LIKE "%'.$search.'%" OR nama LIKE "%'.$search.'%")')
                  ->where('username !=','admin')
                  ->from('user')
                  ->limit($rows, $start);    
         
-        return $this->db->get();
+        return $this->db->get(); */
+        
+        $this->db->select('u.id, u.username, u.nama, u.level, u.opsi1, u.opsi2, u.keterangan, 
+            CASE 
+                WHEN u.opsi1 = "" THEN "semua mapel" 
+                ELSE GROUP_CONCAT(DISTINCT CONCAT("+ ", m.modul_nama, " - ", t.topik_nama) ORDER BY t.topik_nama SEPARATOR "<br/> ") 
+            END AS topik_nama')
+            ->from('user u')
+            ->join('cbt_topik t', 'FIND_IN_SET(t.topik_id, u.opsi1)', 'left')
+            ->join('cbt_modul m', 't.topik_modul_id = m.modul_id', 'left')
+            ->where('(u.username LIKE "%'.$search.'%" OR u.nama LIKE "%'.$search.'%")')
+            ->where('u.username !=', 'admin')
+            ->group_by('u.username')
+            ->limit($rows, $start);
+        return $this->db->get(); 
     }
     
     function get_all_user_count($search){
-        $this->db->select('COUNT(*) AS hasil')
+        /* $this->db->select('COUNT(*) AS hasil')
                  ->like('user.username', $search)
                  ->or_like('user.nama', $search)
                  ->where('user.username !=','admin')
                  ->from('user');
-        return $this->db->get();
+        return $this->db->get(); */
+        $this->db->select('COUNT(DISTINCT u.username) AS hasil')
+     ->from('user u')
+     ->join('cbt_topik t', 'FIND_IN_SET(t.topik_id, u.opsi1)', 'left')
+     ->join('cbt_modul m', 't.topik_modul_id = m.modul_id', 'left')
+     ->where('u.username !=', 'admin')
+     ->group_start()
+         ->like('u.username', $search)
+         ->or_like('u.nama', $search)
+     ->group_end();
+return $this->db->get();
+
     }
     
     function get_parent_menu($child_menu){
-        $sql = 'SELECT `user_menu`.`parent` FROM user_menu WHERE `user_menu`.`kode_menu`="'.$child_menu.'"';
+        $sql = 'SELECT user_menu.parent FROM user_menu WHERE user_menu.kode_menu="'.$child_menu.'"';
         $query = $this->db->query($sql);
         if($query->num_rows()>0){
             $hasil = $query->row()->parent;
@@ -117,7 +151,7 @@ class Users_model extends CI_Model{
     }
     
     function get_menu_detail($kode_menu){
-        $sql = 'SELECT `user_menu`.* FROM user_menu WHERE `user_menu`.`kode_menu`="'.$kode_menu.'" LIMIT 1';
+        $sql = 'SELECT user_menu.* FROM user_menu WHERE user_menu.kode_menu="'.$kode_menu.'" LIMIT 1';
         return $this->db->query($sql);
     }
     
@@ -125,9 +159,9 @@ class Users_model extends CI_Model{
      * Mendapatkan menu dashboard secara dynamic 
      */ 
     function get_menu($kode_menu, $level){
-        $sql = 'SELECT user_menu.* FROM `user_akses` INNER JOIN `user_level` ON (`user_akses`.`level` = `user_level`.`level`) 
-            INNER JOIN `user_menu` ON (`user_akses`.`kode_menu` = `user_menu`.`kode_menu`) WHERE user_akses.`level`="'.$level.'"
-            GROUP BY `user_menu`.`parent` ORDER BY user_menu.parent ASC';
+        $sql = 'SELECT MAX(user_menu.id) AS id, MAX(user_menu.tipe) AS tipe, MAX(user_menu.parent) AS parent, MAX(user_menu.kode_menu) AS kode_menu, MAX(user_menu.nama_menu) AS nama_menu, MAX(user_menu.url) AS url, MAX(user_menu.icon) AS icon, MAX(user_menu.urutan) AS urutan FROM user_akses INNER JOIN user_level ON (user_akses.level = user_level.level) 
+            INNER JOIN user_menu ON (user_akses.kode_menu = user_menu.kode_menu) WHERE user_akses.level="'.$level.'"
+            GROUP BY user_menu.parent ORDER BY user_menu.parent ASC';
         $result=$this->db->query($sql);
         $parent_kode_menu = $this->get_parent_menu($kode_menu);
         
@@ -151,9 +185,9 @@ class Users_model extends CI_Model{
     				}
                 }
                 
-                $sql_child = 'SELECT user_menu.* FROM `user_akses` INNER JOIN `user_level` ON (`user_akses`.`level` = `user_level`.`level`) 
-                    INNER JOIN `user_menu` ON (`user_akses`.`kode_menu` = `user_menu`.`kode_menu`) WHERE user_akses.`level`="'.$level.'" 
-                    AND user_menu.`tipe`=1 AND user_menu.parent="'.$parent->kode_menu.'" ORDER BY user_menu.`urutan` ASC';
+                $sql_child = 'SELECT user_menu.* FROM user_akses INNER JOIN user_level ON (user_akses.level = user_level.level) 
+                    INNER JOIN user_menu ON (user_akses.kode_menu = user_menu.kode_menu) WHERE user_akses.level="'.$level.'" 
+                    AND user_menu.tipe=1 AND user_menu.parent="'.$parent->kode_menu.'" ORDER BY user_menu.urutan ASC';
                 $result_child = $this->db->query($sql_child);
                 
                 $menu_child = '';

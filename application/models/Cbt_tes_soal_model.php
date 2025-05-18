@@ -118,11 +118,11 @@ class Cbt_tes_soal_model extends CI_Model{
 
         if($total_soal == $pilgan){
             //jika soal terdiri hanya pilihan ganda bobot nilai 100%
-            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$total_soal.',1)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
+            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$total_soal.',2)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
 
         }elseif($total_soal == $not_pilgan){
-            //jika soal terdiri hanya pilihan ganda bobot nilai 100%
-            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$total_soal.',1)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
+            //jika soal terdiri bukan pilihan ganda bobot nilai 100%
+            $sql = 'SELECT round(SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$total_soal.',2)*100 as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';
         }else{
             //jika soal terdiri dari pilihan ganda dan esay maka bobot nilai pilgan adalah 60% dan esay 40%
             $sql = 'SELECT round(((SUM(IF(cbt_soal.soal_tipe=1,tessoal_nilai,0))/'.$pilgan.'*0.6) + (SUM(IF(cbt_soal.soal_tipe!=1,tessoal_nilai,0))/'.$not_pilgan.'*0.4))*100,0) as hasil, COUNT(CASE WHEN tessoal_nilai=0 THEN 1 END) AS jawaban_salah, COUNT(*) AS total_soal FROM cbt_tes_soal JOIN cbt_soal ON cbt_tes_soal.tessoal_soal_id=cbt_soal.soal_id WHERE tessoal_tesuser_id="'.$tessoal_id.'"';

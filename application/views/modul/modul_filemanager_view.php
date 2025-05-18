@@ -12,13 +12,13 @@
 
 <!-- Main content -->
 <section class="content">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-6">
             <?php echo form_open_multipart($url.'/upload_file','id="form-upload" class="form-horizontal"'); ?>
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="box-title">Upload File</div>
-                    </div><!-- /.box-header -->
+                    </div>
 
                     <div class="box-body">
                         <div class="row-fluid">
@@ -47,7 +47,7 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="box-title">Buat Folder</div>
-                    </div><!-- /.box-header -->
+                    </div>
 
                     <div class="box-body">
                         <div class="row-fluid">
@@ -70,7 +70,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 
 	<div class="row">
         <div class="col-xs-12">

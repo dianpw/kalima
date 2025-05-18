@@ -26,6 +26,7 @@
                             <label>Pilih Mata Pelajaran</label>
                             <div id="data-kelas">
                                 <select name="topik" id="topik" class="form-control input-sm">
+                                <option value="" disabled selected>-- Pilih Mata Pelajaran --</option>
                                     <?php if(!empty($select_topik)){ echo $select_topik; } ?>
                                 </select>
                             </div>
