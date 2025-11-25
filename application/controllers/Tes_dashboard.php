@@ -31,6 +31,17 @@ class Tes_dashboard extends Tes_Controller {
         $data['url'] = $this->url;
         $data['timestamp'] = strtotime(date('Y-m-d H:i:s'));
 
+		// Data IP untuk keperluan display dan validasi
+        $data['user_ip'] = $this->dapatkan_ip_asal();
+        $data['cloudflare_detected'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && !empty($_SERVER['HTTP_CF_CONNECTING_IP']));
+        $data['cloudflare_ip'] = $data['cloudflare_detected'] ? $_SERVER['HTTP_CF_CONNECTING_IP'] : '';
+
+        // Validasi IP Range - Hasilnya untuk warning bukan block
+        $ip_validation_result = $this->validasiRangeIP();
+        $data['ip_allowed'] = $ip_validation_result['allowed'];
+        $data['ip_validation_message'] = $ip_validation_result['message'];
+        $data['allowed_ranges'] = $ip_validation_result['allowed_ranges'];
+
         $username = $this->access_tes->get_username();
 		$query_user = $this->cbt_user_model->get_by_kolom_limit('user_name', $username, 1);
 		if($query_user->num_rows()>0){
@@ -58,8 +69,210 @@ class Tes_dashboard extends Tes_Controller {
 			$data['informasi'] = $query_info->konfigurasi_isi;
 		}
 
-        $this->template->display_tes($this->kelompok.'/tes_dashboard_view', 'Dashboard', $data);
+        $this->template->display_tes($this->kelompok.'/tes_dashboardIPValid_view', 'Dashboard', $data);
     }
+
+	    /**
+     * MENDAPATKAN DESKRIPSI UNTUK RANGE CIDR
+     * @param string $range Range CIDR
+     * @return string Deskripsi range
+     */
+    private function dapatkanDeskripsiRange($range) {
+        $deskripsi = [
+            '10.1.28.0/22' => 'Jaringan Kelas - VH5-Class',
+            '10.1.40.0/23' => 'Jaringan Kelas - VH5-Class', 
+            '10.1.20.0/23' => 'Jaringan Kelas - VH5-Class',
+            '10.100.14.0/23' => 'Jaringan Laboratorium - Wifi Jurusan',
+            '103.186.167.0/24' => 'Jaringan Utama - ICT'
+
+        ];
+        
+        return isset($deskripsi[$range]) ? $deskripsi[$range] : 'Jaringan Internal';
+    }
+	
+    /**
+     * VALIDASI IP BERDASARKAN RANGE CIDR DENGAN DUKUNGAN CLOUDFLARE
+     * @return array Hasil validasi IP
+     * @description Memeriksa apakah IP pengguna berada dalam range access point yang diizinkan
+     */
+    private function validasiRangeIP() {
+        // Daftar range CIDR yang diizinkan (access point)
+        $daftar_range_diizinkan = [
+            '10.1.28.0/22',      // Range: 10.1.28.1 - 10.1.31.254
+            '10.1.40.0/23',      // Range: 10.1.40.1 - 10.1.41.254  
+            '10.1.20.0/23',      // Range: 10.1.20.1 - 10.1.21.254 
+            '10.100.14.0/23',    // Range: 10.100.14.1 - 10.100.15.254 
+            '103.186.167.0/24',  // Range: 103.187.167.1 - 103.187.167.254
+           // '127.0.0.1',         // IPv4 localhost untuk development
+            //'::1'                // IPv6 localhost untuk development
+        ];
+
+        $ip_pengguna = $this->dapatkan_ip_asal();
+        $ip_diizinkan = false;
+        $range_cocok = '';
+        
+        foreach ($daftar_range_diizinkan as $cidr) {
+            if ($this->cekIPDalamCIDR($ip_pengguna, $cidr)) {
+                $ip_diizinkan = true;
+                $range_cocok = $cidr;
+                break;
+            }
+        }
+
+        // Siapkan deskripsi untuk setiap range
+        $ranges_dengan_deskripsi = [];
+        foreach ($daftar_range_diizinkan as $range) {
+            $ranges_dengan_deskripsi[] = [
+                'range' => $range,
+                'description' => $this->dapatkanDeskripsiRange($range)
+            ];
+        }
+
+        if ($ip_diizinkan) {
+            return [
+                'allowed' => true,
+                'message' => "IP Anda ($ip_pengguna) valid dan diizinkan mengakses sistem.",
+                'matched_range' => $range_cocok,
+                'allowed_ranges' => $ranges_dengan_deskripsi
+            ];
+        } else {
+            // Log percobaan akses tetap dilakukan
+            //log_message('warning', "Akses IP dari range tidak dikenal - IP: $ip_pengguna, Range Diizinkan: " . implode(', ', $daftar_range_diizinkan));
+			log_message('info', "Akses IP dari range tidak dikenal - IP: $ip_pengguna, Range Diizinkan: " . implode(', ', $daftar_range_diizinkan));
+            
+            return [
+                'allowed' => false,
+                'message' => "IP Anda ($ip_pengguna) tidak berada dalam range yang diizinkan. <br/>Silahkan menggunakan Jaringan Wifi Sekolah yang disediakan.",
+                'matched_range' => null,
+                'allowed_ranges' => $ranges_dengan_deskripsi
+            ];
+        }
+    }
+
+	
+    /**
+     * MENDAPATKAN IP ASLI DENGAN DUKUNGAN CLOUDFLARE
+     * @return string Alamat IP asli pengguna
+     * @description Mendeteksi IP asli dengan prioritas header Cloudflare untuk akurasi yang lebih baik
+     */
+    private function dapatkan_ip_asal() {
+        $ip_asal = '0.0.0.0';
+
+        // Daftar header dengan prioritas Cloudflare
+        $daftar_header = [
+            'HTTP_CF_CONNECTING_IP',    // Header khusus Cloudflare
+            'HTTP_X_FORWARDED_FOR',     // Standard forward header
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR'               // IP langsung dari server
+        ];
+
+        foreach ($daftar_header as $header) {
+            if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
+                $ip_kandidat = $_SERVER[$header];
+                
+                // Handle multiple IPs dalam header (biasanya di X-Forwarded-For)
+                if (strpos($ip_kandidat, ',') !== false) {
+                    $ip_array = explode(',', $ip_kandidat);
+                    $ip_kandidat = trim($ip_array[0]); // Ambil IP pertama
+                }
+                
+                // Validasi format IP
+                if (filter_var($ip_kandidat, FILTER_VALIDATE_IP)) {
+                    $ip_asal = $ip_kandidat;
+                    break;
+                }
+            }
+        }
+        
+        return $ip_asal;
+    }
+
+	
+    /**
+     * CEK APAKAH IP BERADA DALAM RANGE CIDR
+     * @param string $ip Alamat IP yang akan dicek
+     * @param string $cidr Range CIDR
+     * @return bool True jika IP berada dalam range
+     * @description Support untuk IPv4 dan IPv6
+     */
+    private function cekIPDalamCIDR($ip, $cidr) {
+        // Handle IPv6 localhost
+        if ($cidr === '::1' && $ip === '::1') {
+            return true;
+        }
+
+        // Handle IPv4 localhost
+        if ($cidr === '127.0.0.1' && $ip === '127.0.0.1') {
+            return true;
+        }
+
+        // Handle single IP (tanpa CIDR)
+        if (strpos($cidr, '/') === false) {
+            return $ip === $cidr;
+        }
+
+        list($subnet, $bits) = explode('/', $cidr);
+        
+        // Untuk IPv4
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $ip_long = ip2long($ip);
+            $subnet_long = ip2long($subnet);
+            
+            if ($ip_long === false || $subnet_long === false) {
+                return false;
+            }
+            
+            $mask = -1 << (32 - $bits);
+            $subnet_long &= $mask;
+            
+            return ($ip_long & $mask) == $subnet_long;
+        }
+        
+        // Untuk IPv6
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            return $this->cekIPv6DalamCIDR($ip, $cidr);
+        }
+        
+        return false;
+    }
+
+	
+    /**
+     * CEK RANGE CIDR UNTUK IPv6
+     * @param string $ip Alamat IPv6
+     * @param string $cidr Range CIDR IPv6
+     * @return bool True jika IPv6 berada dalam range
+     */
+    private function cekIPv6DalamCIDR($ip, $cidr) {
+        list($subnet, $bits) = explode('/', $cidr);
+        
+        $ip_bin = inet_pton($ip);
+        $subnet_bin = inet_pton($subnet);
+        
+        if ($ip_bin === false || $subnet_bin === false) {
+            return false;
+        }
+        
+        // Konversi ke binary string
+        $ip_bin_str = '';
+        $subnet_bin_str = '';
+        
+        for ($i = 0; $i < 16; $i++) {
+            $ip_bin_str .= sprintf('%08b', ord($ip_bin[$i]));
+            $subnet_bin_str .= sprintf('%08b', ord($subnet_bin[$i]));
+        }
+        
+        // Bandingkan hanya bagian network
+        $bagian_network = substr($ip_bin_str, 0, $bits);
+        $bagian_subnet = substr($subnet_bin_str, 0, $bits);
+        
+        return $bagian_network === $bagian_subnet;
+    }
+
+
 
     /**
      * Konfirmasi tes yang akan dilakukan
@@ -121,6 +334,7 @@ class Tes_dashboard extends Tes_Controller {
     		redirect('tes_dashboard');
     	}
     }
+
 
     /**
      * Memulai tes

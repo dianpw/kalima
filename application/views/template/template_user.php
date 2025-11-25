@@ -79,7 +79,7 @@
         </nav>
       </header>
       <!-- Full Width Column -->
-      <div class="content-wrapper">
+      <div class="content-wrapper" >
             <?php 
             if(!empty($content)){
                 echo $content; 

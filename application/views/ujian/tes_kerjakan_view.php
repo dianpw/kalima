@@ -1,4 +1,21 @@
 <div class="container">
+    
+    <!-- Tambahkan style untuk mencegah seleksi teks -->
+    <style>
+        /* PENGAMANAN HALAMAN TES: Mencegah seleksi teks */
+        body {
+            -webkit-user-select: none;  /* Untuk browser Chrome, Safari, Opera */
+            -moz-user-select: none;     /* Untuk browser Firefox */
+            -ms-user-select: none;      /* Untuk browser Internet Explorer */
+            user-select: none;          /* Standar CSS */
+        }
+        
+        /* Opsional: Berikan tampilan cursor default untuk elemen teks */
+        .box-body, #isi-tes-soal {
+            cursor: default;
+        }
+    </style>
+
 	<!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
@@ -12,37 +29,62 @@
 
 	<!-- Main content -->
     <section class="content">
+        
+        <!-- IP Validation Status -->
+        <div class="row">
+            <div class="callout <?php echo $ip_allowed ? 'callout-success' : 'callout-warning'; ?>">
+                <h4>
+                    <i class="fa <?php echo $ip_allowed ? 'fa-check-circle' : 'fa-exclamation-triangle'; ?>"></i> 
+                    IP <?php echo $ip_allowed ? 'Valid' : 'Tidak Dikenal'; ?>
+                </h4>
+                <p>
+                    Alamat IP Anda: <?= $_SERVER['REMOTE_ADDR'] ?? '' ?></strong> - 
+                    Terdeteksi melalui Cloudflare: <strong>
+                    <?php 
+                        if($cloudflare_detected) {
+                            echo 'Ya (' . $cloudflare_ip . ')';
+                        } else {
+                            echo 'Tidak';
+                        }
+                    ?></strong>
+                </p>
+                <?php if (!$ip_allowed): ?>
+                <p><strong>Perhatian:</strong> <?php echo $ip_validation_message; ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+
     	<div class="row">
-        <?php echo form_open('tes_kerjakan/simpan_jawaban','id="form-kerjakan"')?>
-            <input type="hidden" name="tes-id" id="tes-id" value="<?php if(!empty($tes_id)){ echo $tes_id; } ?>">
-            <input type="hidden" name="tes-user-id" id="tes-user-id" value="<?php if(!empty($tes_user_id)){ echo $tes_user_id; } ?>">
-            <input type="hidden" name="tes-soal-id" id="tes-soal-id" value="<?php if(!empty($tes_soal_id)){ echo $tes_soal_id; } ?>">
-            <input type="hidden" name="tes-soal-nomor" id="tes-soal-nomor"  value="<?php if(!empty($tes_soal_nomor)){ echo $tes_soal_nomor; } ?>">
-            <input type="hidden" name="tes-soal-jml" id="tes-soal-jml" value="<?php if(!empty($tes_soal_jml)){ echo $tes_soal_jml; } ?>">
-            <input type="hidden" name="tes-soal-ragu" id="tes-soal-ragu" value="<?php if(!empty($tes_ragu)){ echo $tes_ragu; } ?>">
-    		<div class="box box-success box-solid">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Soal <span id="judul-soal"><?php if(!empty($tes_soal_nomor)){ echo 'ke '.$tes_soal_nomor; } ?></span></h3>
-                    <div class="box-tools pull-right">
-                        <div class="pull-right">
-                            <div id="sisa-waktu"></div>
+            <?php echo form_open('tes_kerjakan/simpan_jawaban','id="form-kerjakan"')?>
+                <input type="hidden" name="tes-id" id="tes-id" value="<?php if(!empty($tes_id)){ echo $tes_id; } ?>">
+                <input type="hidden" name="tes-user-id" id="tes-user-id" value="<?php if(!empty($tes_user_id)){ echo $tes_user_id; } ?>">
+                <input type="hidden" name="tes-soal-id" id="tes-soal-id" value="<?php if(!empty($tes_soal_id)){ echo $tes_soal_id; } ?>">
+                <input type="hidden" name="tes-soal-nomor" id="tes-soal-nomor"  value="<?php if(!empty($tes_soal_nomor)){ echo $tes_soal_nomor; } ?>">
+                <input type="hidden" name="tes-soal-jml" id="tes-soal-jml" value="<?php if(!empty($tes_soal_jml)){ echo $tes_soal_jml; } ?>">
+                <input type="hidden" name="tes-soal-ragu" id="tes-soal-ragu" value="<?php if(!empty($tes_ragu)){ echo $tes_ragu; } ?>">
+                <div class="box box-success box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Soal <span id="judul-soal"><?php if(!empty($tes_soal_nomor)){ echo 'ke '.$tes_soal_nomor; } ?></span></h3>
+                        <div class="box-tools pull-right">
+                            <div class="pull-right">
+                                <div id="sisa-waktu"></div>
+                            </div>
                         </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <div id="isi-tes-soal" style="font-size: 15px;">
+                            <?php if(!empty($tes_soal)){ echo $tes_soal; } ?>
+                        </div>
+                    </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="button" class="btn btn-default hide" id="btn-sebelumnya">Soal Sebelumnya</button>&nbsp;&nbsp;&nbsp;
+                        <div class="btn btn-warning" id="btn-ragu" onclick="ragu()">
+                            <input type="checkbox" style="width:10px;height:10px;" name="btn-ragu-checkbox" id="btn-ragu-checkbox" <?php if(!empty($tes_ragu)){ echo "checked"; } ?> /> Ragu-ragu
+                        </div>&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-default" id="btn-selanjutnya">Soal Selanjutnya</button>
                     </div>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <div id="isi-tes-soal" style="font-size: 15px;">
-                        <?php if(!empty($tes_soal)){ echo $tes_soal; } ?>
-                    </div>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                    <button type="button" class="btn btn-default hide" id="btn-sebelumnya">Soal Sebelumnya</button>&nbsp;&nbsp;&nbsp;
-                    <div class="btn btn-warning" id="btn-ragu" onclick="ragu()">
-                        <input type="checkbox" style="width:10px;height:10px;" name="btn-ragu-checkbox" id="btn-ragu-checkbox" <?php if(!empty($tes_ragu)){ echo "checked"; } ?> /> Ragu-ragu
-                    </div>&nbsp;&nbsp;&nbsp;
-                    <button type="button" class="btn btn-default" id="btn-selanjutnya">Soal Selanjutnya</button>
-                </div>
-            </div><!-- /.box -->
-        </form>
+                </div><!-- /.box -->
+            </form>
     	</div>
         <div class="row">
             <div class="box box-success box-solid">
@@ -54,10 +96,14 @@
                     <p class="help-block">Soal yang sudah dijawab akan berwarna Biru.</p>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
+                    <small class="text-muted">
+                        <i class="fa fa-clock-o"></i> Terakhir diperbarui: <?php echo date('d/m/Y H:i:s'); ?>
+                    </small>
                     <button class="btn btn-default pull-right" id="btn-hentikan">Selesaikan Tes</button>
                 </div>
             </div><!-- /.box -->
         </div>
+        
     </section><!-- /.content -->
 
     <div class="modal" style="max-height: 100%;overflow-y: auto;" id="modal-hentikan" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
@@ -110,7 +156,170 @@
     </div>
 </div><!-- /.container -->
 
+<!-- Modal Popup untuk IP Warning -->
+<?php if (!$ip_allowed): ?>
+<div class="modal fade" id="ipWarningModal" tabindex="-1" role="dialog" aria-labelledby="ipWarningModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="ipWarningModalLabel">
+                    <i class="fa fa-exclamation-triangle"></i> Peringatan - IP Tidak Dikenal
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <h4><i class="fa fa-warning"></i> Perhatian!</h4>
+                    <p><?php echo $ip_validation_message; ?></p>
+                </div>
+                
+                <div class="well">
+                    <h5><i class="fa fa-list"></i> Range IP yang Diizinkan:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="10%">#</th>
+                                    <th>Range CIDR</th>
+                                    <th>Deskripsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $counter = 1; ?>
+                                <?php foreach ($allowed_ranges as $range_item): ?>
+                                <tr>
+                                    <td><?php echo $counter++; ?></td>
+                                    <td><code><?php echo htmlspecialchars($range_item['range']); ?></code></td>
+                                    <td><?php echo $range_item['description']; ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fa fa-info-circle"></i> Informasi:</h5>
+                    <p>Anda tetap dapat menggunakan sistem, namun jika ini adalah kesalahan, silakan:</p>
+                    <ul>
+                        <li>Pastikan terhubung ke jaringan yang benar</li>
+                        <li>Gunakan access point yang ditentukan</li>
+                        <li>Hubungi Pengawas Ujian untuk bantuan lebih lanjut</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="welcome/logout" class="btn btn-default">
+                    <i class="fa fa-times"></i> Tutup
+                </a>
+                <button type="button" class="btn btn-primary" onclick="window.location.reload()">
+                    <i class="fa fa-refresh"></i> Coba Lagi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <script type="text/javascript">
+    // Tampilkan modal warning jika IP tidak dikenali
+    <?php if (!$ip_allowed): ?>
+    $('#ipWarningModal').modal('show');
+    <?php endif; ?>
+
+    /**
+     * FUNGSI PENGAMANAN HALAMAN TES: Mencegah tindakan copy-paste
+     * Kode ini bertujuan untuk melindungi konten soal dari tindakan penyalinan
+     * oleh peserta tes selama ujian berlangsung.
+     */
+
+    // Fungsi untuk menerapkan pengamanan copy
+    function terapkanPengamananCopy() {
+        /**
+         * 1. BLOKIR KLIK KANAN (CONTEXT MENU)
+         * Mencegah akses menu klik kanan yang bisa digunakan untuk copy
+         */
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            console.log('Klik kanan dinonaktifkan untuk keamanan tes');
+        });
+
+        /**
+         * 2. BLOKIR DRAG DAN DROP
+         * Mencegah drag teks yang bisa digunakan untuk seleksi dan copy
+         */
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        /**
+         * 3. BLOKIR SELEKSI TEKS
+         * Mencegah seleksi teks melalui mouse atau keyboard
+         */
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        /**
+         * 4. BLOKIR SHORTCUT KEYBOARD
+         * Mencegah penggunaan shortcut keyboard untuk copy, select all, dll.
+         */
+        document.addEventListener('keydown', function(e) {
+            // Deteksi kombinasi Ctrl+C, Ctrl+A, Ctrl+X, Ctrl+S, Ctrl+U
+            if (e.ctrlKey && (
+                e.keyCode === 67 ||  // C - Copy
+                e.keyCode === 65 ||  // A - Select All
+                e.keyCode === 88 ||  // X - Cut
+                e.keyCode === 83 ||  // S - Save
+                e.keyCode === 85     // U - View Source
+            )) {
+                e.preventDefault();
+                console.log('Shortcut keyboard diblokir untuk keamanan tes');
+            }
+            
+            // Blokir F12 (Developer Tools)
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                console.log('Developer Tools diblokir untuk keamanan tes');
+            }
+            
+            // Blokir Ctrl+Shift+I (Developer Tools)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+                console.log('Developer Tools diblokir untuk keamanan tes');
+            }
+        });
+
+        /**
+         * 5. BLOKIR EVENT COPY EXPLICIT
+         * Mencegah aksi copy meskipun berhasil diseleksi
+         */
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            // Opsional: Tampilkan pesan peringatan
+            alert('Tindakan copy tidak diizinkan selama tes berlangsung.');
+        });
+
+        /**
+         * 6. BLOKIR AKSES DEVELOPER TOOLS MELALUI INSPECT ELEMENT
+         * Metode tambahan untuk mendeteksi pembukaan developer tools
+         */
+        let devToolsOpen = false;
+        setInterval(function() {
+            const widthThreshold = window.outerWidth - window.innerWidth > 100;
+            const heightThreshold = window.outerHeight - window.innerHeight > 100;
+            
+            if ((widthThreshold || heightThreshold) && !devToolsOpen) {
+                devToolsOpen = true;
+                alert('Developer Tools terdeteksi. Silahkan tutup untuk melanjutkan tes.');
+                // Opsional: Redirect atau tindakan lainnya
+                // window.location.reload();
+            }
+        }, 1000);
+    }
+
     function zoombesar(){
         $('#isi-tes-soal').css("font-size", "140%");
         $('#isi-tes-soal').css("line-height", "140%");
@@ -338,6 +547,12 @@
     }
 
     $(function () {
+        /**
+         * TERAPKAN PENGAMANAN COPY SAAT DOKUMEN SIAP
+         * Memastikan pengamanan aktif segera setelah halaman dimuat
+         */
+        terapkanPengamananCopy();
+
         var sisa_detik = <?php if(!empty($detik_sisa)){ echo $detik_sisa; } ?>;
         setInterval(function() {
             var sisa_menit = Math.round(sisa_detik/60);

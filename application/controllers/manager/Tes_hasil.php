@@ -152,8 +152,11 @@ class Tes_hasil extends Member_Controller {
 					
 					//$this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil
                     //$worksheet->setCellValueByColumnAndRow(6, $row, round($nilai->hasil));
-                    $worksheet->setCellValueByColumnAndRow(6, $row, round($this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil));
-
+                    if(empty($temp->tesuser_id)){
+						$worksheet->setCellValueByColumnAndRow(6, $row, '0');	
+					}else{
+						$worksheet->setCellValueByColumnAndRow(6, $row, round($this->cbt_tes_soal_model->get_nilai($temp->tesuser_id)->row()->hasil));
+					}
                     $row++;
                 }
             }
