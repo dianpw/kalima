@@ -71,24 +71,6 @@
             </form>
         </div>
     </div> -->
-
-	<div class="row">
-         <?php if (!empty($_SESSION)): ?>
-        <table>
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            <?php foreach ($_SESSION as $key => $value): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($key); ?></td>
-                <td><?php echo htmlspecialchars(print_r($value, true)); ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php else: ?>
-        <p>Tidak ada session yang aktif.</p>
-    <?php endif; ?>
         <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
