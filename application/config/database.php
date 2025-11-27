@@ -15,10 +15,14 @@ $query_builder = TRUE; // Mengaktifkan Query Builder - OK
 $db['default'] = array(
 	'dsn'	=> '',
 	// REKOMENDASI KEAMANAN: Gunakan environment variables untuk hostname
-	'hostname' => '10.100.14.240', // IP database server
+	//'hostname' => '10.100.14.240', // IP database server
 	// REKOMENDASI: Simpan credentials di environment file (.env)
-	'username' => 'ujian', // Username database
-	'password' => '1q2w3e4r', // Password database - PERINGATAN: Hardcoded password!
+	//'username' => 'ujian', // Username database
+	//'password' => '1q2w3e4r', // Password database - PERINGATAN: Hardcoded password!
+	'hostname' => 'localhost', // Gunakan 'localhost' jika database di server yang sama
+	'username' => 'root', // Username database
+	'password' => '', // Password database
+	
 	'database' => 'kalima', // Nama database
 	'dbdriver' => 'mysqli', // Driver database - OK (mysqli lebih aman dari mysql)
 	'dbprefix' => '', // Prefix table - kosong OK
