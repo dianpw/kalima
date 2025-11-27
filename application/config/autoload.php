@@ -5,131 +5,128 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | -------------------------------------------------------------------
 | AUTO-LOADER
 | -------------------------------------------------------------------
-| This file specifies which systems should be loaded by default.
+| File ini menentukan sistem mana yang harus dimuat secara otomatis
 |
-| In order to keep the framework as light-weight as possible only the
-| absolute minimal resources are loaded by default. For example,
-| the database is not connected to automatically since no assumption
-| is made regarding whether you intend to use it.  This file lets
-| you globally define which systems you would like loaded with every
-| request.
-|
-| -------------------------------------------------------------------
-| Instructions
-| -------------------------------------------------------------------
-|
-| These are the things you can load automatically:
-|
-| 1. Packages
-| 2. Libraries
-| 3. Drivers
-| 4. Helper files
-| 5. Custom config files
-| 6. Language files
-| 7. Models
-|
+| Untuk menjaga framework ringan, hanya resource minimal yang dimuat
+| secara default. Contohnya, database tidak terhubung otomatis karena
+| tidak ada asumsi apakah Anda akan menggunakannya. File ini memungkinkan
+| Anda mendefinisikan sistem mana yang ingin dimuat di setiap request.
 */
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Packages
 | -------------------------------------------------------------------
+| Package adalah library third-party yang dapat dimuat otomatis
+|
 | Prototype:
-|
 |  $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
-|
 */
 $autoload['packages'] = array();
+// REKOMENDASI: Jika menggunakan Composer, tambahkan path vendor
+// $autoload['packages'] = array(APPPATH.'third_party', VENDORPATH);
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Libraries
 | -------------------------------------------------------------------
-| These are the classes located in system/libraries/ or your
-| application/libraries/ directory, with the addition of the
-| 'database' library, which is somewhat of a special case.
+| Library classes yang berada di system/libraries/ atau 
+| application/libraries/
 |
-| Prototype:
-|
-|	$autoload['libraries'] = array('database', 'email', 'session');
-|
-| You can also supply an alternative library name to be assigned
-| in the controller:
-|
-|	$autoload['libraries'] = array('user_agent' => 'ua');
+| REKOMENDASI: Hanya load library yang digunakan di semua controller
+| Loading berlebihan akan mempengaruhi performa
 */
 $autoload['libraries'] = array('session','database','access','template');
+
+// ANALISIS KONFIGURASI SAAT INI:
+// - 'session'    : Diperlukan untuk session management - OK
+// - 'database'   : Koneksi database global - OK jika digunakan di semua halaman
+// - 'access'     : Custom library (mungkin untuk authentication) - OK
+// - 'template'   : Custom library (mungkin untuk templating) - OK
+
+// REKOMENDASI: 
+// 1. Jika tidak semua halaman butuh database, pindahkan ke controller tertentu
+// 2. Pastikan library 'access' dan 'template' sudah ada di application/libraries/
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Drivers
 | -------------------------------------------------------------------
-| These classes are located in system/libraries/ or in your
-| application/libraries/ directory, but are also placed inside their
-| own subdirectory and they extend the CI_Driver_Library class. They
-| offer multiple interchangeable driver options.
-|
-| Prototype:
-|
-|	$autoload['drivers'] = array('cache');
-|
-| You can also supply an alternative property name to be assigned in
-| the controller:
-|
-|	$autoload['drivers'] = array('cache' => 'cch');
-|
+| Drivers classes yang extend CI_Driver_Library
+| Contoh: cache, session, database drivers
 */
 $autoload['drivers'] = array();
+// REKOMENDASI: Jika menggunakan cache, tambahkan:
+// $autoload['drivers'] = array('cache');
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Helper Files
 | -------------------------------------------------------------------
-| Prototype:
+| File helper yang memberikan fungsi bantu
 |
-|	$autoload['helper'] = array('url', 'file');
+| REKOMENDASI: Load helper yang benar-benar digunakan di banyak tempat
 */
 $autoload['helper'] = array('form','url','security');
+
+// ANALISIS KONFIGURASI SAAT INI:
+// - 'form'    : Helper untuk form - OK jika banyak form
+// - 'url'     : Helper untuk URL - Sangat diperlukan - OK
+// - 'security': Helper untuk security - Baik untuk keamanan - OK
+
+// REKOMENDASI TAMBAHAN:
+// 1. Untuk aplikasi dengan banyak string manipulation, tambahkan 'text'
+// 2. Untuk file operations, tambahkan 'file'
+// 3. Untuk number formatting, tambahkan 'number'
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Config files
 | -------------------------------------------------------------------
-| Prototype:
+| File konfigurasi custom yang ingin dimuat otomatis
 |
-|	$autoload['config'] = array('config1', 'config2');
-|
-| NOTE: This item is intended for use ONLY if you have created custom
-| config files.  Otherwise, leave it blank.
-|
+| NOTE: Hanya untuk config file custom
 */
 $autoload['config'] = array();
+// REKOMENDASI: Jika memiliki config custom, contoh:
+// $autoload['config'] = array('app_config', 'email_config');
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Language files
 | -------------------------------------------------------------------
-| Prototype:
-|
-|	$autoload['language'] = array('lang1', 'lang2');
-|
-| NOTE: Do not include the "_lang" part of your file.  For example
-| "codeigniter_lang.php" would be referenced as array('codeigniter');
-|
+| File bahasa untuk internationalization
 */
 $autoload['language'] = array();
+// REKOMENDASI: Jika aplikasi multi-bahasa, tambahkan:
+// $autoload['language'] = array('general', 'validation');
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Models
 | -------------------------------------------------------------------
-| Prototype:
+| Models yang dimuat otomatis di semua controller
 |
-|	$autoload['model'] = array('first_model', 'second_model');
-|
-| You can also supply an alternative model name to be assigned
-| in the controller:
-|
-|	$autoload['model'] = array('first_model' => 'first');
+| REKOMENDASI: HINDARI loading model di sini kecuali benar-benar 
+| digunakan di semua controller. Lebih baik load di controller tertentu.
 */
 $autoload['model'] = array();
+// KONFIGURASI SUDAH BAIK - tidak loading model secara global
+
+/*
+| -------------------------------------------------------------------
+| REKOMENDASI UMUM
+| -------------------------------------------------------------------
+*/
+// 1. PERFORMANCE: Jangan overload autoload dengan library/helper 
+//    yang tidak digunakan di semua halaman
+
+// 2. SECURITY: Helper 'security' sudah baik untuk XSS cleaning dll
+
+// 3. MAINTENANCE: Struktur saat ini sudah cukup baik dan modular
+
+// 4. CUSTOM LIBRARY: Pastikan library custom ('access', 'template') 
+//    sudah didefinisikan dengan benar di application/libraries/
+
+// 5. ERROR HANDLING: Jika ada error "Unable to load the requested class",
+//    periksa penulisan nama library/helper (case sensitive)

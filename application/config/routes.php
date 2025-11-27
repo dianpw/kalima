@@ -5,51 +5,42 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | -------------------------------------------------------------------------
 | URI ROUTING
 | -------------------------------------------------------------------------
-| This file lets you re-map URI requests to specific controller functions.
+| File ini memungkinkan Anda untuk memetakan ulang request URI ke 
+| fungsi controller tertentu.
 |
-| Typically there is a one-to-one relationship between a URL string
-| and its corresponding controller class/method. The segments in a
-| URL normally follow this pattern:
+| Biasanya ada hubungan one-to-one antara string URL dan class/method
+| controller yang sesuai. Segment dalam URL biasanya mengikuti pola:
 |
 |	example.com/class/method/id/
 |
-| In some instances, however, you may want to remap this relationship
-| so that a different class/function is called than the one
-| corresponding to the URL.
-|
-| Please see the user guide for complete details:
-|
-|	https://codeigniter.com/user_guide/general/routing.html
-|
+| Namun dalam beberapa kasus, Anda mungkin ingin memetakan ulang hubungan
+| ini sehingga class/fungsi yang berbeda dipanggil dari yang sesuai
+| dengan URL.
+*/
+
+/*
 | -------------------------------------------------------------------------
 | RESERVED ROUTES
 | -------------------------------------------------------------------------
-|
-| There are three reserved routes:
-|
-|	$route['default_controller'] = 'welcome';
-|
-| This route indicates which controller class should be loaded if the
-| URI contains no data. In the above example, the "welcome" class
-| would be loaded.
-|
-|	$route['404_override'] = 'errors/page_missing';
-|
-| This route will tell the Router which controller/method to use if those
-| provided in the URL cannot be matched to a valid route.
-|
-|	$route['translate_uri_dashes'] = FALSE;
-|
-| This is not exactly a route, but allows you to automatically route
-| controller and method names that contain dashes. '-' isn't a valid
-| class or method name character, so it requires translation.
-| When you set this option to TRUE, it will replace ALL dashes in the
-| controller and method URI segments.
-|
-| Examples:	my-controller/index	-> my_controller/index
-|		my-controller/my-method	-> my_controller/my_method
+| Ada tiga route yang dicadangkan:
 */
+
+// Controller default yang di-load ketika tidak ada data di URI
 $route['default_controller'] = 'welcome';
-$route['manager']="manager/welcome";
+// REKOMENDASI: Ganti dengan controller yang lebih deskriptif
+// Contoh: 'home', 'dashboard', 'landing'
+
+// Route untuk halaman manager - memetakan /manager ke controller manager/welcome
+$route['manager'] = "manager/welcome";
+// REKOMENDASI: Pastikan struktur folder controller 'manager' ada
+// dan controller 'Welcome' berada di subfolder manager
+
+// Controller untuk menangani halaman 404 (Page Not Found)
 $route['404_override'] = '';
+// REKOMENDASI: Buat custom 404 page untuk user experience yang better
+// Contoh: $route['404_override'] = 'errors/error_404';
+
+// Mengatur translasi dashes dalam URI
 $route['translate_uri_dashes'] = FALSE;
+// REKOMENDASI: Set TRUE jika ingin menggunakan hyphen dalam URL
+// Contoh: my-controller/index akan diterjemahkan ke my_controller/index
