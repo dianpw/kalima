@@ -73,6 +73,22 @@
     </div> -->
 
 	<div class="row">
+         <?php if (!empty($_SESSION)): ?>
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            <?php foreach ($_SESSION as $key => $value): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($key); ?></td>
+                <td><?php echo htmlspecialchars(print_r($value, true)); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php else: ?>
+        <p>Tidak ada session yang aktif.</p>
+    <?php endif; ?>
         <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
@@ -94,7 +110,7 @@
                                     <th>Preview</th>
                                     <th>Tanggal</th>
                                     <th>Ukuran File</th>
-                                    <th> </th>
+                                    <?php if($_SESSION['cbt_level']=='admin'): ?><th> </th><?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -103,8 +119,8 @@
                                     <td> </td>
 									<td> </td>
                                     <td> </td>
-                                    <td> </td>
-                                    <td> </td>
+                                    <td> </td>                                    
+                                    <?php if($_SESSION['cbt_level']=='admin'): ?><td> </td><?php endif; ?>
                                 </tr>
                             </tbody>
                         </table>                        
@@ -295,7 +311,7 @@
                         {"bSearchable": false, "bSortable": false},
     					{"bSearchable": false, "bSortable": false, "sWidth":"150px"},
                         {"bSearchable": false, "bSortable": false, "sWidth":"90px"},
-                        {"bSearchable": false, "bSortable": false, "sWidth":"50px"}],
+                        <?php if($_SESSION['cbt_level']=='admin'): ?>{"bSearchable": false, "bSortable": false, "sWidth":"50px"}<?php endif; ?>],
                   "sAjaxSource": "<?php echo site_url().'/'.$url; ?>/get_datatable/",
                   "autoWidth": false,
                   "fnServerParams": function ( aoData ) {

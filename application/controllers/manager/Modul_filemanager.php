@@ -152,7 +152,6 @@ class Modul_filemanager extends Member_Controller {
 		
 	    foreach ($query as $temp) {		
 			//$id=$temp;
-			//var_dump($temp);
 			
 			// $id = str_replace("\\","", explode("mapel_", $temp));
 			// $id=$id['1'];
@@ -160,7 +159,8 @@ class Modul_filemanager extends Member_Controller {
 			// $mapel = $this->cbt_topik_model->getMapelBy($id['1']);	
 			$record = array();
 
-			$temp = str_replace("/","", $temp);
+			$temp = str_replace("\\","", $temp);
+			//var_dump($temp);
             
 			$record[] = ++$i;
 			$is_dir=0;

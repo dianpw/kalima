@@ -20,7 +20,7 @@
                 IP <?php echo $ip_allowed ? 'Valid' : 'Tidak Dikenal'; ?>
             </h4>
             <p>
-                Alamat IP Anda: <strong><?= $_SERVER['REMOTE_ADDR'] ?? '' ?></strong> - 
+                Alamat IP Anda: <strong><?= $_SERVER['REMOTE_ADDR'] ?? '' ?></strong><br>
                 Terdeteksi melalui Cloudflare: <strong>
                 <?php 
                     if($cloudflare_detected) {
@@ -162,7 +162,7 @@
                 <a href="welcome/logout" class="btn btn-default">
                     <i class="fa fa-times"></i> Tutup
                 </a>
-                <button type="button" class="btn btn-primary" onclick="window.location.reload()">
+                <button type="button" class="btn btn-primary" onclick="window.location.reload(true)">
                     <i class="fa fa-refresh"></i> Coba Lagi
                 </button>
             </div>

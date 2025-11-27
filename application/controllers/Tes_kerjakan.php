@@ -39,7 +39,13 @@ class Tes_kerjakan extends Tes_Controller {
             // Data IP untuk keperluan display dan validasi
             $data['user_ip'] = $this->dapatkan_ip_asal();
             $data['cloudflare_detected'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && !empty($_SERVER['HTTP_CF_CONNECTING_IP']));
-            $data['cloudflare_ip'] = $data['cloudflare_detected'] ? $_SERVER['HTTP_CF_CONNECTING_IP'] : '';
+            $cloudflare_ip = $data['cloudflare_detected'] ? $_SERVER['HTTP_CF_CONNECTING_IP'] : '';
+            $parts = explode('.', $cloudflare_ip);
+            if (count($parts) === 4) {
+                $data['cloudflare_ip'] = $parts[0] . '.' . $parts[1] . '.xxx.xxx';
+            }else{
+                $data['cloudflare_ip'] = $cloudflare_ip;
+            }
 
             // Validasi IP Range - Hasilnya untuk warning bukan block
             $ip_validation_result = $this->validasiRangeIP();
