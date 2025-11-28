@@ -110,9 +110,6 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <h4 class="modal-title" id="ipWarningModalLabel">
                     <i class="fa fa-exclamation-triangle"></i> Peringatan - IP Tidak Dikenal
                 </h4>

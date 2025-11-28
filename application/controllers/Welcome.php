@@ -14,26 +14,31 @@ class Welcome extends CI_Controller {
 		$this->load->model('cbt_konfigurasi_model');
 		$this->load->library('access_tes');
 		$this->load->library('user_agent');
-		$this->load->model('cbt_konfigurasi_model');
 	}
     
 	public function index(){
 		$data['url'] = $this->url;
 		$data['timestamp'] = strtotime(date('Y-m-d H:i:s'));
+		
 		if ($this->agent->is_browser()){
             if($this->agent->browser()=='Internet Explorer' ){
+                // REKOMENDASI: Berikan pesan yang lebih informatif
                 $this->template->display_user('blokbrowser_view', 'Browser yang didukung');
             }else{
 				$akses_cbt = 1;
+				
+				// CEK AKSES MOBILE
 				if($this->agent->is_mobile()){
 					$query = $this->cbt_konfigurasi_model->get_by_kolom_limit('konfigurasi_kode', 'cbt_mobile_lock_xambro', 1);
-					if($query->row()->konfigurasi_isi=="ya"){
+					// REKOMENDASI: Tambahkan validasi jika query tidak ada hasilnya
+					if($query->num_rows() > 0 && $query->row()->konfigurasi_isi=="ya"){
 						$agent = $this->agent->agent_string();
 						if(strpos($agent, 'KALIMA TEST')==false){
 							$akses_cbt = 0;
 						}
 					}
 				}
+				
 				if($akses_cbt==1){
 					if(!$this->access_tes->is_login()){
 						$data['link_login_operator'] = "tidak";
@@ -66,14 +71,15 @@ class Welcome extends CI_Controller {
         
         $this->form_validation->set_rules('username', 'Username','required|strip_tags');
         $this->form_validation->set_rules('password', 'Password','required|strip_tags');
+        
         if($this->form_validation->run() == TRUE){
             $this->form_validation->set_rules('token','token','callback_check_login');
 			if($this->form_validation->run() == FALSE){
-				//Jika login gagal
-                $status['status'] = 0;
+				// REKOMENDASI: Log attempt login gagal untuk security monitoring
+				$status['status'] = 0;
                 $status['error'] = validation_errors();
 			}else{
-				//Jika sukses
+				// REKOMENDASI: Tambahkan log login sukses
                 $status['status'] = 1;
 			}
         }else{
@@ -84,6 +90,7 @@ class Welcome extends CI_Controller {
     }
     
     function logout(){
+		// REKOMENDASI: Tambahkan log aktivitas logout
 		$this->access_tes->logout();
 		redirect('welcome');
 	}
@@ -103,6 +110,14 @@ class Welcome extends CI_Controller {
 			return FALSE;
 		}
 	}
+
+	// REKOMENDASI: Tambahkan method untuk menangani maintenance mode
+	/*
+	function maintenance() {
+		$data['message'] = "Sistem sedang dalam pemeliharaan";
+		$this->load->view('maintenance_view', $data);
+	}
+	*/
 }
 
 /* End of file welcome.php */

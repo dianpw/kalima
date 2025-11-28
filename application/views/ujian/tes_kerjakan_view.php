@@ -92,7 +92,7 @@
 	<!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Tes : <?php if(!empty($tes_name)){ echo $tes_name; } ?>
+            Mapel : <?php if(!empty($tes_name)){ echo $tes_name; } ?>
         </h1>
         <div class="breadcrumb">
             <img src="<?php echo base_url(); ?>public/images/zoom.png" style="cursor: pointer;" height="20" onclick="zoomnormal()" title="Klik ukuran font normal" />&nbsp;&nbsp;

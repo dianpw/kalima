@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
+  <!-- REKOMENDASI: Tambahkan lang attribute untuk accessibility -->
   <head>
     <meta charset="UTF-8">
     <title><?php if(!empty($site_name)){ echo $site_name; } ?> | <?php echo $title; ?></title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content='width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes' name='viewport'>
+    <!-- REKOMENDASI: maximum-scale=10 terlalu tinggi, bisa diset 5 saja -->
+    
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- REKOMENDASI: CSP ini memaksa HTTPS, pastikan semua resource support HTTPS -->
+    
     <meta name="description" content="Aplikasi KALIMA TEST">
     <meta name="keywords" content="Aplikasi KALIMA TEST">
     <meta name="author" content="Dian Purwanto">
+    <!-- REKOMENDASI: Tambahkan Open Graph tags untuk social media -->
+    
     <!-- favicon -->
+    <!-- REKOMENDASI: Struktur favicon sudah lengkap dan baik untuk berbagai device -->
     <link rel="apple-touch-icon" sizes="57x57" href="<?php echo base_url(); ?>public/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="<?php echo base_url(); ?>public/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="<?php echo base_url(); ?>public/favicon/apple-icon-72x72.png">
@@ -23,11 +31,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url(); ?>public/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="<?php echo base_url(); ?>public/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url(); ?>public/favicon/favicon-16x16.png">
-    <!--link rel="manifest" href="<?php echo base_url(); ?>public/favicon/manifest.json"-->
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="<?php echo base_url(); ?>public/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <!-- REKOMENDASI: Uncomment manifest.json untuk PWA capabilities -->
+    <!--link rel="manifest" href="<?php //echo base_url(); ?>public/favicon/manifest.json"-->
 
+    <!-- REKOMENDASI: Urutkan CSS berdasarkan dependencies dan priority -->
     <!-- Bootstrap 3.3.4 -->
     <link href="<?php echo base_url(); ?>public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
@@ -36,6 +43,7 @@
     <link href="<?php echo base_url(); ?>public/plugins/ionicons/css/ionicons.min.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="<?php echo base_url(); ?>public/plugins/adminlte/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- REKOMENDASI: Load hanya skin yang digunakan, bukan semua skin -->
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link href="<?php echo base_url(); ?>public/plugins/adminlte/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
@@ -43,10 +51,12 @@
     <link href="<?php echo base_url(); ?>public/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url(); ?>public/plugins/datatables/extensions/Responsive/css/dataTables.responsive.css" rel="stylesheet" type="text/css" />
 
+    <!-- REKOMENDASI: CSS untuk plugin yang tidak digunakan di semua page bisa di-load conditional -->
     <link href="<?php echo base_url(); ?>public/plugins/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url(); ?>public/plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
 
-    <!-- summernote dimatikan
+    <!-- summernote dimatikan - BAIK: comment plugin yang tidak digunakan -->
+    <!--
     <link href="<?php echo base_url(); ?>public/plugins/summernote/summernote.css" rel="stylesheet" type="text/css" />
     -->
 
@@ -58,14 +68,17 @@
     <link href="<?php echo base_url(); ?>public/plugins/select2-4.0.5/css/select2.min.css" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!-- REKOMENDASI: IE8 support sudah kurang relevan, pertimbangkan dihapus -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]--> 
 
+    <!-- REKOMENDASI: Pindahkan SEMUA script ke sebelum </body> untuk performance -->
     <!-- jQuery 2.1.4 -->
     <script src="<?php echo base_url(); ?>public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- REKOMENDASI: jQuery 2.1.4 sudah outdated, pertimbangkan upgrade -->
+    
     <!-- AdminLTE App -->
     <script src="<?php echo base_url(); ?>public/plugins/adminlte/js/app.min.js" type="text/javascript"></script>
     <!-- Bootstrap 3.3.2 JS -->
@@ -77,7 +90,8 @@
     <!-- SlimScroll 1.3.0 -->
     <script src="<?php echo base_url(); ?>public/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
 	
-	 <!-- ChartJS 1.0.1 -->
+	<!-- ChartJS 1.0.1 -->
+    <!-- REKOMENDASI: ChartJS tidak terlihat digunakan di template ini -->
     <script src="<?php echo base_url(); ?>public/app.js" type="text/javascript"></script>
 
     <script src="<?php echo base_url(); ?>public/plugins/datatables/jquery.dataTables.min.js" type="text/javascript"></script>
@@ -89,9 +103,11 @@
     <script src="<?php echo base_url(); ?>public/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="<?php echo base_url(); ?>public/plugins/adminlte/js/demo.js" type="text/javascript"></script>
+    <!-- REKOMENDASI: demo.js biasanya untuk contoh, bisa dihapus di production -->
     
-    <!-- summernote dimatikan
-    <script src="<?php echo base_url(); ?>public/plugins/summernote/summernote.js" type="text/javascript"></script>
+    <!-- summernote dimatikan - BAIK -->
+    <!--
+    <script src="<?php // echo base_url(); ?>public/plugins/summernote/summernote.js" type="text/javascript"></script>
     -->
 
     <script src="<?php echo base_url(); ?>public/plugins/pnotify/pnotify.custom.min.js" type="text/javascript"></script>
@@ -116,6 +132,7 @@
       .resetpad {
         padding-right: 0 !important;
       }
+      /* REKOMENDASI: Tambahkan CSS untuk print optimization */
     </style>
 
     <script type="text/javascript">
@@ -148,13 +165,15 @@
 				delay:2000
 			});
 		} 
+		// REKOMENDASI: Tambahkan fungsi untuk warning/confirm notification
   </script>
   </head>
+  <!-- REKOMENDASI: Tambahkan ARIA attributes untuk accessibility -->
   <body class="hold-transition skin-green sidebar-mini resetpad" >
+    <!-- REKOMENDASI: Tambahkan skip navigation link -->
     <div class="wrapper">
 
       <header class="main-header">
-
         <!-- Logo -->
         <a href="<?php echo site_url(); ?>/manager" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -168,6 +187,7 @@
           <!-- Sidebar toggle button-->
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
+            <!-- REKOMENDASI: Tambahkan aria-expanded attribute dinamis -->
           </a>
           <!-- Navbar Right Menu -->
           <div class="navbar-custom-menu">
@@ -191,18 +211,19 @@
                   <li class="user-footer">
                     <div class="pull-left">
                       <a data-toggle="modal" href="#modal-password" class="btn btn-default btn-flat">Password</a>
+                      <!-- REKOMENDASI: Tambahkan title attribute untuk accessibility -->
                     </div>
                     <div class="pull-right">
-                      <a href="<?php echo site_url(); ?>/manager/welcome/logout" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="<?php echo site_url(); ?>manager/welcome/logout" class="btn btn-default btn-flat">Sign out</a>
                     </div>
                   </li>
                 </ul>
               </li>
             </ul>
           </div>
-
         </nav>
       </header>
+      
       <!-- Left side column. contains the logo and sidebar -->
       <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
@@ -214,7 +235,6 @@
             </div>
             <div class="pull-left info">
               <p><?php if(!empty($nama)){ echo $nama; }else{ echo 'Administrator'; } ?></p>
-
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
           </div>
@@ -229,10 +249,8 @@
                 echo $sidemenu;
             }
             ?>
-            
           </ul>
         </section>
-        <!-- /.sidebar -->
       </aside>
 
       <!-- Content Wrapper. Contains page content -->
@@ -242,17 +260,18 @@
 				echo $content;
 			}
 		?>
-      </div><!-- /.content-wrapper -->
+      </div>
 
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
           <b>Version</b> <?php if(!empty($site_version)){ echo $site_version; } ?>
         </div>
-        <strong>&copy; KALIMA TEST</strong>
+        <strong>&copy; KALIMA TEST 2023 - <?php echo date("Y"); ?></strong>
+        <!-- REKOMENDASI: Tambahkan tahun dinamis seperti di template user -->
       </footer>
-
-    </div><!-- ./wrapper -->
+    </div>
 	
+	<!-- Modal Change Password -->
 	<div class="modal" id="modal-password" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -268,6 +287,7 @@
                                 <div class="form-group">
                                     <label>Old Password</label>
                                     <input type="password" class="form-control" id="password-old" name="password-old" placeholder="Old Password">
+                                    <!-- REKOMENDASI: Tambahkan required attribute -->
                                 </div>
                                 <div class="form-group">
                                     <label>New Password</label>
@@ -283,11 +303,13 @@
 				<div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="password-submit">Change</button>
+                    <!-- REKOMENDASI: Tambahkan loading state pada button -->
 				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+			</div>
+		</div>
+	</div>
     
+    <!-- Modal Loading -->
     <div class="modal" id="modal-proses" data-backdrop="static">
   		<div class="modal-dialog">
   			<div class="modal-content">
@@ -297,14 +319,14 @@
             </div>
             <br />
             Catatan : Refresh Halaman jika proses terlalu Lama.
+            <!-- REKOMENDASI: Tambahkan progress bar atau estimasi waktu -->
   				</div>
-  			</div><!-- /.modal-content -->
-  		</div><!-- /.modal-dialog -->
-  	</div><!-- /.modal -->
+  			</div>
+  		</div>
+  	</div>
 	
 	<script>
     $(function () {
-                        
       //Form Ubah Password
 			$('#modal-password').on('shown.bs.modal', function (e) {
 				$('#form-pesan-password').html('');
@@ -320,7 +342,7 @@
 			
 			$('#form-password').submit(function(){        
         $.ajax({
-          url:"<?php echo site_url(); ?>/manager/dashboard/password",
+          url:"<?php echo site_url(); ?>manager/dashboard/password",
           type:"POST",
           data:$('#form-password').serialize(),
           cache: false,
@@ -336,6 +358,9 @@
         });
         return false;
 			});
+			
+			// REKOMENDASI: Tambahkan event handler untuk Enter key di form password
+			// REKOMENDASI: Tambahkan form validation sebelum submit
     });
   </script>
   </body>
