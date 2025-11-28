@@ -78,7 +78,86 @@
 
     <script src="<?php echo base_url(); ?>public/app.js" type="text/javascript"></script>
     <!-- REKOMENDASI: Gunakan defer/async attribute untuk script non-kritis -->
-    
+    <style type="text/css">
+      #isi-tes-soal img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Perbaikan untuk header dan footer */
+      .main-header .navbar {
+        margin-bottom: 0;
+        border: none;
+        min-height: 60px;
+      }
+      
+      .navbar-brand {
+        padding: 15px 15px;
+        font-size: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .navbar-custom-menu {
+        margin-right: 0;
+      }
+      
+      .user-menu-dropdown {
+        min-width: 200px;
+      }
+      
+      .timestamp-display {
+        padding: 15px;
+        font-weight: bold;
+        color: #3c8dbc;
+      }
+      
+      .main-footer {
+        padding: 15px;
+        background: #f4f4f4;
+        border-top: 1px solid #d2d6de;
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .footer-left {
+        font-size: 14px;
+      }
+      
+      .footer-right {
+        font-size: 14px;
+      }
+      
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        
+        .footer-right {
+          margin-top: 10px;
+        }
+        
+        .navbar-header {
+          float: none;
+        }
+        
+        .navbar-custom-menu {
+          float: none !important;
+        }
+      }
+      
+      .content-wrapper {
+        min-height: calc(100vh - 115px);
+        background-color: aliceblue;
+      }
+    </style>
   </head>
   <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
   <body class="skin-green layout-top-nav">

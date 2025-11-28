@@ -74,7 +74,7 @@
         $('#form-login').submit(function(){
           $("#modal-proses").modal('show');
             $.ajax({
-              url:"<?php echo site_url(); ?>welcome/login",
+              url:"<?php echo site_url(); ?>/welcome/login",
      			    type:"POST",
      			    data:$('#form-login').serialize(),
      			    cache: false,

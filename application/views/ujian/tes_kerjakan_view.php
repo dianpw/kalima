@@ -8,6 +8,8 @@
             -moz-user-select: none;     /* Untuk browser Firefox */
             -ms-user-select: none;      /* Untuk browser Internet Explorer */
             user-select: none;          /* Standar CSS */
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         /* Opsional: Berikan tampilan cursor default untuk elemen teks */
@@ -23,6 +25,7 @@
             z-index: 9999;
             min-width: 300px;
             animation: slideInRight 0.5s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         @keyframes slideInRight {
@@ -38,6 +41,7 @@
             background: #dc3545;
             color: white;
             border: none;
+            border-radius: 10px;
         }
         .forced-logout-modal .modal-header {
             border-bottom: 2px solid rgba(255,255,255,0.3);
@@ -46,6 +50,7 @@
             background: white;
             color: #dc3545;
             border: none;
+            font-weight: bold;
         }
 
         /* Watermark untuk mobile */
@@ -78,16 +83,67 @@
             margin: 10px 0;
             border-radius: 5px;
         }
+
+        /* Style untuk tabel pelanggaran */
+        .violations-table {
+            font-size: 12px;
+        }
+        .violations-table th {
+            background-color: #f8f9fa;
+        }
+        .violation-high {
+            background-color: #f12727ff !important;
+        }
+        .violation-medium {
+            background-color: #e7c997ff !important;
+        }
+        .violation-low {
+            background-color: #e8f5e8 !important;
+        }
+
+        /* Progress bar untuk pelanggaran */
+        .violation-progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            background-color: #088bf7ff;
+        }
+        
+        .violation-progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Status keamanan */
+        .security-status {
+            border-left: 4px solid #28a745;
+            padding-left: 15px;
+        }
+        .security-status.warning {
+            border-left-color: #ffc107;
+        }
+        .security-status.danger {
+            border-left-color: #dc3545;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .screenshot-alert {
+                min-width: 250px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .violations-table {
+                font-size: 10px;
+            }
+        }
     </style>
 
     <!-- Watermark Container -->
     <div class="mobile-watermark" id="mobileWatermark"></div>
-
-    <!-- Mobile Warning -->
-    <div class="mobile-warning" id="mobileWarning">
-        <i class="fa fa-mobile"></i> <strong>Mode Mobile Terdeteksi:</strong> 
-        Segala aktivitas mencurigakan akan tercatat dan dapat mengakibatkan diskualifikasi.
-    </div>
 
 	<!-- Content Header (Page header) -->
     <section class="content-header">
@@ -98,6 +154,11 @@
             <img src="<?php echo base_url(); ?>public/images/zoom.png" style="cursor: pointer;" height="20" onclick="zoomnormal()" title="Klik ukuran font normal" />&nbsp;&nbsp;
             <img src="<?php echo base_url(); ?>public/images/zoom.png" style="cursor: pointer;" height="26" onclick="zoombesar()" title="Klik ukuran font lebih besar" />
         </div>
+            <!-- Mobile Warning -->
+            <div class="callout mobile-warning" id="mobileWarning">
+                <i class="fa fa-mobile"></i> <strong>Mode Mobile Terdeteksi:</strong> 
+                Segala aktivitas mencurigakan akan tercatat dan dapat mengakibatkan diskualifikasi.
+            </div>
     </section>
 
 	<!-- Main content -->
@@ -167,6 +228,46 @@
                 <div class="box-body">
                     <?php if(!empty($tes_daftar_soal)){ echo $tes_daftar_soal; } ?>
                     <p class="help-block">Soal yang sudah dijawab akan berwarna Biru.</p>
+                    <!-- Status Keamanan -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                        <h4><i class="fa fa-shield"></i> Monitoring Keamanan Tes</h4>
+                            <div class="security-status card" id="securityStatus">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fa fa-shield-alt"></i> Status Keamanan</h5>
+                                    <p class="card-text" id="securityStatusText">Sistem keamanan aktif dan memantau aktivitas tes.</p>
+                                    <div class="violation-progress">
+                                        <div id="violation-progress-bar" class="violation-progress-bar bg-success" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted">Total Poin Pelanggaran: <strong id="total-points" style="color: red;">0</strong> / 10</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Tabel pelanggaran keamanan -->
+                    <div id="violations-container" style="margin-top: 20px; display: none;">
+                        <h4><i class="fa fa-list"></i> Catatan Pelanggaran Keamanan</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped violations-table">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="20%">Waktu</th>
+                                        <th width="25%">Jenis Pelanggaran</th>
+                                        <th width="35%">Deskripsi</th>
+                                        <th width="15%">Poin</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="violations-body">
+                                    <!-- Data pelanggaran akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="help-block text-danger">
+                            <i class="fa fa-warning red"></i> 
+                            <strong style="color: red;">Peringatan:</strong> Pelanggaran keamanan akan dicatat dan dapat mengakibatkan diskualifikasi.
+                        </p>
+                    </div>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                     <small class="text-muted">
@@ -224,7 +325,6 @@
 				</div>
             </div>
         </div>
-
     </form>
     </div>
 </div><!-- /.container -->
@@ -235,9 +335,6 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <h4 class="modal-title" id="ipWarningModalLabel">
                     <i class="fa fa-exclamation-triangle"></i> Peringatan - IP Tidak Dikenal
                 </h4>
@@ -308,16 +405,13 @@
             <div class="modal-body text-center">
                 <h3><i class="fa fa-exclamation-triangle fa-3x"></i></h3>
                 <h4>TERDETEKSI PELANGGARAN KEAMANAN BERULANG</h4>
-                <p>Anda telah melanggar aturan keamanan tes sebanyak <strong id="violation-count">3</strong> kali.</p>
+                <p>Anda telah melanggar aturan keamanan tes </p>
                 <p>Akun Anda akan dikeluarkan secara otomatis dari sistem.</p>
                 <div class="countdown-container">
-                    <p>Redirect dalam: <span id="logout-countdown">5</span> detik</p>
+                    <div class="alert alert-light d-inline-block px-4 py-2">
+                        <h5 class="mb-1">Redirect dalam: <span id="logout-countdown" class="fw-bold">5</span> detik</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a href="welcome/logout" class="btn btn-lg btn-block">
-                    <i class="fa fa-sign-out"></i> KELUAR SEKARANG
-                </a>
             </div>
         </div>
     </div>
@@ -325,24 +419,233 @@
 
 <script type="text/javascript">
     /**
-     * SISTEM DETEKSI SCREENSHOT DAN PENGAMANAN TES - MOBILE COMPATIBLE
-     * Kode ini berfungsi untuk mendeteksi aktivitas mencurigakan di mobile dan desktop
+     * SISTEM TES ONLINE TEROPTIMASI DENGAN MONITORING KEAMANAN LENGKAP
+     * SMK Negeri 5 Malang
      */
 
-    // Variabel untuk melacak status keamanan
+    // ==================== KONFIGURASI SISTEM ====================
+    const VIOLATION_STORAGE_KEY = 'tes_security_violations';
+    const MAX_VIOLATION_POINTS = 10.0;
+    
+    const VIOLATION_POINTS = {
+        SCREENSHOT_ATTEMPT: 3.0,
+        TAB_SWITCH: 1.0,
+        NETWORK_DISCONNECT: 0.2,
+        NETWORK_CHANGE: 0.5,
+        DEVICE_ORIENTATION_CHANGE: 0.5,
+        WINDOW_RESIZE: 0.5,
+        DEVELOPER_TOOLS: 1.5,
+        RIGHT_CLICK: 0.5,
+        KEYBOARD_SHORTCUT: 0.8,
+        MOBILE_GESTURE: 1.0,
+        VISIBILITY_CHANGE: 1.0,
+        SUSPICIOUS_ACTIVITY: 0.5,
+        TES_STARTED: 0.0
+    };
+
+    // ==================== VARIABEL GLOBAL ====================
     let securityViolationCount = 0;
     let lastScreenshotDetection = 0;
     let isLoggingOut = false;
     let isMobileDevice = false;
     let mobileDetectionEnabled = false;
+    let sisa_detik = <?php if(!empty($detik_sisa)){ echo $detik_sisa; } else { echo 3600; } ?>;
+    let timerInterval;
+    let securitySystemInitialized = false;
 
-    /**
-     * FUNGSI DETEKSI DEVICE - Mendeteksi apakah user menggunakan perangkat mobile
-     */
+    // ==================== SISTEM PENCATATAN PELANGGARAN ====================
+    
+    function initializeViolations() {
+        try {
+            if (!sessionStorage.getItem(VIOLATION_STORAGE_KEY)) {
+                const initialData = {
+                    violations: [],
+                    totalPoints: 0,
+                    startTime: new Date().toISOString(),
+                    tesUserId: document.getElementById('tes-user-id')?.value || 'unknown',
+                    tesId: document.getElementById('tes-id')?.value || 'unknown',
+                    violationHistory: []
+                };
+                sessionStorage.setItem(VIOLATION_STORAGE_KEY, JSON.stringify(initialData));
+            }
+            updateViolationsDisplay();
+        } catch (error) {
+            console.error('Error initializeViolations:', error);
+        }
+    }
+
+    function addViolation(type, description, points = 0, details = {}) {
+        try {
+            const violationsData = getViolationsData();
+            // Konversi ke number untuk memastikan perbandingan akurat
+            points = parseFloat(points) || 0;
+            const newTotal = parseFloat(violationsData.totalPoints) + points;
+            
+            console.log(`📝 Adding violation: ${type}, Points: ${points}, New Total: ${newTotal}`);
+            
+            const newViolation = {
+                id: violationsData.violations.length + 1,
+                timestamp: new Date().toLocaleTimeString('id-ID'),
+                type: type,
+                description: description,
+                points: points,
+                totalAfter: violationsData.totalPoints + points,
+                isMobile: isMobileDevice,
+                details: details
+            };
+            
+            violationsData.violations.push(newViolation);
+            violationsData.totalPoints += points;
+            violationsData.violationHistory.push({
+                type: type,
+                points: points,
+                timestamp: new Date().toISOString(),
+                totalPoints: violationsData.totalPoints
+            });
+            
+            sessionStorage.setItem(VIOLATION_STORAGE_KEY, JSON.stringify(violationsData));
+            updateViolationsDisplay();
+            securityViolationCount = violationsData.totalPoints;
+            
+            console.log(`📝 Pelanggaran: ${type} - ${points} poin - Total: ${violationsData.totalPoints}`);
+            
+            // Cek batas setelah menambah pelanggaran
+            if (violationsData.totalPoints >= MAX_VIOLATION_POINTS && !isLoggingOut) { 
+                console.log('🚨 TRIGGER: Poin pelanggaran mencapai batas:', violationsData.totalPoints);
+                handleMultipleViolations();
+            }
+            
+            return newViolation;
+        } catch (error) {
+            console.error('Error dalam addViolation:', error);
+        }
+    }
+
+    function getViolationsData() {
+        try {
+            return JSON.parse(sessionStorage.getItem(VIOLATION_STORAGE_KEY) || '{"violations":[],"totalPoints":0,"violationHistory":[]}');
+        } catch (error) {
+            console.error('Error membaca data pelanggaran:', error);
+            return { violations: [], totalPoints: 0, violationHistory: [] };
+        }
+    }
+
+    function updateViolationsDisplay() {
+        try {
+            const violationsData = getViolationsData();
+            const container = document.getElementById('violations-container');
+            const tbody = document.getElementById('violations-body');
+            const totalPointsElement = document.getElementById('total-points');
+            const progressBar = document.getElementById('violation-progress-bar');
+            const securityStatus = document.getElementById('securityStatus');
+            const securityStatusText = document.getElementById('securityStatusText');
+            
+            if (!container || !tbody) return;
+            
+            if (violationsData.violations.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            tbody.innerHTML = '';
+            
+            // Tampilkan 10 pelanggaran terbaru
+            violationsData.violations.slice(-10).forEach(violation => {
+                const row = document.createElement('tr');
+                row.className = `violation-${getSeverityClass(violation.points)}`;
+                
+                row.innerHTML = `
+                    <td>${violation.id}</td>
+                    <td>${violation.timestamp}</td>
+                    <td>${violation.type}</td>
+                    <td>${violation.description}</td>
+                    <td class="text-center">
+                        <span class="badge bg-${getPointColor(violation.points)}">
+                            ${violation.points.toFixed(1)}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Update progress bar dan status
+            const percentage = Math.min((violationsData.totalPoints / MAX_VIOLATION_POINTS) * 100, 100);
+            if (progressBar) progressBar.style.width = percentage + '%';
+            if (totalPointsElement) totalPointsElement.textContent = violationsData.totalPoints.toFixed(1);
+            
+            // Update warna progress bar dan status keamanan
+            if (progressBar && securityStatus && securityStatusText) {
+                if (percentage >= 80) {
+                    progressBar.className = 'violation-progress-bar bg-danger';
+                    securityStatus.className = 'security-status danger card';
+                    securityStatusText.textContent = 'Tingkat pelanggaran KRITIS! Hindari aktivitas mencurigakan.';
+                } else if (percentage >= 60) {
+                    progressBar.className = 'violation-progress-bar bg-warning';
+                    securityStatus.className = 'security-status warning card';
+                    securityStatusText.textContent = 'Tingkat pelanggaran TINGGI. Perhatikan aktivitas Anda.';
+                } else if (percentage >= 30) {
+                    progressBar.className = 'violation-progress-bar bg-info';
+                    securityStatus.className = 'security-status card';
+                    securityStatusText.textContent = 'Terdeteksi beberapa pelanggaran. Lanjutkan dengan hati-hati.';
+                } else {
+                    progressBar.className = 'violation-progress-bar bg-success';
+                    securityStatus.className = 'security-status card';
+                    securityStatusText.textContent = 'Tidak ada pelanggaran serius yang terdeteksi.';
+                }
+            }
+            
+            securityViolationCount = violationsData.totalPoints;
+            
+        } catch (error) {
+            console.error('Error updateViolationsDisplay:', error);
+        }
+    }
+
+    function getPointColor(points) {
+        if (points >= 2.0) return 'danger';
+        if (points >= 1.0) return 'warning';
+        if (points >= 0.5) return 'info';
+        return 'success';
+    }
+
+    function getSeverityClass(points) {
+        if (points >= 2.0) return 'high';
+        if (points >= 1.0) return 'medium';
+        return 'low';
+    }
+
+    function resetViolationData() {
+        try {
+            sessionStorage.removeItem(VIOLATION_STORAGE_KEY);
+            securityViolationCount = 0;
+            
+            // Reset tampilan
+            const container = document.getElementById('violations-container');
+            const tbody = document.getElementById('violations-body');
+            const progressBar = document.getElementById('violation-progress-bar');
+            const totalPointsElement = document.getElementById('total-points');
+            
+            if (container) container.style.display = 'none';
+            if (tbody) tbody.innerHTML = '';
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                progressBar.className = 'violation-progress-bar bg-success';
+            }
+            if (totalPointsElement) totalPointsElement.textContent = '0';
+            
+            console.log('✅ Data pelanggaran direset');
+        } catch (error) {
+            console.error('Error resetViolationData:', error);
+        }
+    }
+
+    // ==================== SISTEM KEAMANAN TEROPTIMASI ====================
+
     function detectMobileDevice() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         
-        // Deteksi berbagai jenis perangkat mobile
         isMobileDevice = (
             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent) ||
             (window.innerWidth <= 768) ||
@@ -351,144 +654,253 @@
             (window.orientation !== undefined)
         );
         
-        console.log('Mobile Device Detected:', isMobileDevice);
+        console.log('📱 Mobile Device:', isMobileDevice);
         return isMobileDevice;
     }
 
-    /**
-     * FUNGSI INISIALISASI DETEKSI MOBILE - Pendekatan khusus untuk mobile
-     */
-    function initMobileDetection() {
-        if (!isMobileDevice) return;
+    function initSecuritySystem() {
+        if (securitySystemInitialized) return;
+        securitySystemInitialized = true;
         
-        console.log('Mengaktifkan sistem deteksi mobile-friendly');
-        mobileDetectionEnabled = true;
+        detectMobileDevice();
+        initScreenshotDetection();
+        terapkanPengamananCopy();
         
-        // Tampilkan warning untuk mobile
-        document.getElementById('mobileWarning').style.display = 'block';
+        if (isMobileDevice) {
+            document.getElementById('mobileWarning').style.display = 'block';
+            createMobileWatermark();
+        }
+    }
+
+    function initScreenshotDetection() {
+        console.log('🛡️ Sistem keamanan diaktifkan - Mobile:', isMobileDevice);
         
-        // 1. BUAT WATERMARK DINAMIS
-        createMobileWatermark();
-        
-        // 2. DETEKSI PERUBAHAN ORIENTASI (Mobile-specific)
-        window.addEventListener('orientationchange', function() {
-            handleSuspiciousActivity('Perubahan orientasi layar terdeteksi', 0.3);
+        // Event listeners yang efisien
+        const securityEvents = {
+            'keydown': handleKeySecurity,
+            'visibilitychange': handleVisibilityChange,
+            'resize': handleWindowResize,
+            'blur': handleWindowBlur,
+            'contextmenu': handleContextMenu,
+            'copy': handleCopyAttempt
+        };
+
+        Object.entries(securityEvents).forEach(([event, handler]) => {
+            document.addEventListener(event, handler, { passive: false });
         });
+
+        // Event listeners khusus network
+        window.addEventListener('online', handleNetworkChange);
+        window.addEventListener('offline', handleNetworkChange);
+
+        // Event listeners khusus mobile
+        if (isMobileDevice) {
+            initMobileSpecificDetection();
+        }
+
+        // Periodic security check
+        setInterval(performSecurityCheck, isMobileDevice ? 45000 : 30000);
+    }
+
+    // Handler functions untuk performa lebih baik
+    function handleKeySecurity(e) {
+        // Deteksi screenshot attempts
+        if (e.keyCode === 44 || e.key === 'PrintScreen' ||
+            (e.metaKey && e.shiftKey && e.keyCode === 51) ||
+            (e.metaKey && e.shiftKey && e.keyCode === 52) ||
+            (e.altKey && e.keyCode === 44)) {
+            e.preventDefault();
+            handleScreenshotDetection('Tombol screenshot ditekan: ' + e.key);
+        }
         
-        // 3. DETEKSI PERUBAHAN UKURAN LAYAR (lebih sensitif di mobile)
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                handleSuspiciousActivity('Perubahan ukuran layar mobile terdeteksi', 0.2);
-            }, 500);
-        });
+        // Deteksi developer tools
+        if ((e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+            (e.keyCode === 123)) {
+            e.preventDefault();
+            addViolation(
+                'DEVELOPER_TOOLS',
+                'Percobaan membuka Developer Tools',
+                VIOLATION_POINTS.DEVELOPER_TOOLS,
+                { keyCode: e.keyCode }
+            );
+        }
+
+        // Deteksi kombinasi tombol mencurigakan
+        if ((e.ctrlKey && e.shiftKey && (e.keyCode === 83 || e.keyCode === 88)) ||
+            (e.altKey && e.keyCode === 83)) {
+            e.preventDefault();
+            addViolation(
+                'KEYBOARD_SHORTCUT',
+                'Kombinasi tombol mencurigakan: ' + e.key,
+                VIOLATION_POINTS.KEYBOARD_SHORTCUT,
+                { keyCode: e.keyCode, key: e.key }
+            );
+        }
+    }
+
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            addViolation(
+                'TAB_SWITCH',
+                'Tab/aplikasi tidak aktif (berpindah dari halaman tes)',
+                VIOLATION_POINTS.TAB_SWITCH,
+                { mobile: isMobileDevice }
+            );
+        }
+    }
+
+    function handleWindowResize() {
+        // Debounced resize handler
+        clearTimeout(window.resizeTimeout);
+        window.resizeTimeout = setTimeout(() => {
+            addViolation(
+                'WINDOW_RESIZE',
+                'Perubahan ukuran window terdeteksi',
+                VIOLATION_POINTS.WINDOW_RESIZE,
+                { mobile: isMobileDevice }
+            );
+        }, 500);
+    }
+
+    function handleWindowBlur() {
+        addViolation(
+            'WINDOW_BLUR',
+            'Window kehilangan fokus',
+            VIOLATION_POINTS.SUSPICIOUS_ACTIVITY,
+            { mobile: isMobileDevice }
+        );
+    }
+
+    function handleContextMenu(e) {
+        e.preventDefault();
+        addViolation(
+            'RIGHT_CLICK',
+            'Klik kanan diblokir',
+            VIOLATION_POINTS.RIGHT_CLICK,
+            { x: e.clientX, y: e.clientY }
+        );
+    }
+
+    function handleCopyAttempt(e) {
+        e.preventDefault();
+        addViolation(
+            'COPY_ATTEMPT',
+            'Percobaan copy content',
+            VIOLATION_POINTS.KEYBOARD_SHORTCUT,
+            { action: 'copy' }
+        );
+    }
+
+    function handleNetworkChange(e) {
+        const type = e.type === 'online' ? 'NETWORK_CHANGE' : 'NETWORK_DISCONNECT';
+        const points = e.type === 'online' ? VIOLATION_POINTS.NETWORK_CHANGE : VIOLATION_POINTS.NETWORK_DISCONNECT;
         
-        // 4. DETEKSI MULTI-TOUCH GESTURES (kemungkinan screenshot gesture)
-        let touchCount = 0;
-        let touchTimer;
+        addViolation(
+            type,
+            `Koneksi internet ${e.type === 'online' ? 'kembali tersambung' : 'terputus'}`,
+            points,
+            { type: e.type, timestamp: new Date().toISOString() }
+        );
+    }
+
+    function handleScreenshotDetection(reason) {
+        const now = Date.now();
+        const cooldown = isMobileDevice ? 10000 : 5000;
         
+        if (now - lastScreenshotDetection < cooldown) {
+            return;
+        }
+        
+        lastScreenshotDetection = now;
+        
+        addViolation(
+            'SCREENSHOT_ATTEMPT',
+            reason + (isMobileDevice ? ' (Mobile)' : ' (Desktop)'),
+            VIOLATION_POINTS.SCREENSHOT_ATTEMPT,
+            { mobile: isMobileDevice, reason: reason }
+        );
+        
+        showScreenshotAlert();
+    }
+
+    function initMobileSpecificDetection() {
+        console.log('📱 Mengaktifkan sistem deteksi mobile-specific');
+        
+        // Deteksi multi-touch gestures
         document.addEventListener('touchstart', function(e) {
-            touchCount = e.touches.length;
-            
-            // Deteksi three-finger touch (gesture umum untuk screenshot di beberapa device)
             if (e.touches.length >= 3) {
-                handleScreenshotDetection('Three-finger touch gesture terdeteksi', 0.8);
+                addViolation(
+                    'MOBILE_GESTURE',
+                    'Three-finger touch gesture terdeteksi (kemungkinan screenshot)',
+                    VIOLATION_POINTS.MOBILE_GESTURE,
+                    { touchCount: e.touches.length, mobile: true }
+                );
             }
-            
-            // Reset touch counter setelah 2 detik
-            clearTimeout(touchTimer);
-            touchTimer = setTimeout(() => {
-                touchCount = 0;
-            }, 2000);
         });
-        
-        // 5. DETEKSI SWIPE GESTURES DARI SISI LAYAR
-        let startX = 0;
-        let startY = 0;
-        
+
+        // Deteksi orientation change
+        window.addEventListener('orientationchange', function() {
+            addViolation(
+                'DEVICE_ORIENTATION_CHANGE',
+                'Perubahan orientasi layar perangkat',
+                VIOLATION_POINTS.DEVICE_ORIENTATION_CHANGE,
+                { orientation: window.orientation, mobile: true }
+            );
+        });
+
+        // Deteksi swipe gestures
+        let startX = 0, startY = 0;
         document.addEventListener('touchstart', function(e) {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
         });
-        
+
         document.addEventListener('touchend', function(e) {
             if (!startX || !startY) return;
             
             const endX = e.changedTouches[0].clientX;
             const endY = e.changedTouches[0].clientY;
             
-            // Deteksi swipe dari pojok kanan bawah (gesture screenshot di beberapa OEM)
+            // Deteksi swipe dari pojok kanan bawah (gesture screenshot)
             if (startX > window.innerWidth * 0.7 && startY > window.innerHeight * 0.7) {
-                handleSuspiciousActivity('Swipe gesture dari area screenshot terdeteksi', 0.8);
-            }
-        });
-
-        // 6. DETEKSI APLIKASI BACKGROUND/BLUR (indikasi screenshot)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                handleSuspiciousActivity('Aplikasi berpindah ke background', 0.8);
-            }
-        });
-
-        // 7. DETEKSI PERUBAHAN ZOOM/PINCH GESTURE
-        let initialDistance = 0;
-        
-        document.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 2) {
-                initialDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
+                addViolation(
+                    'MOBILE_GESTURE',
+                    'Swipe gesture dari area screenshot terdeteksi',
+                    VIOLATION_POINTS.MOBILE_GESTURE * 0.8,
+                    { from: 'bottom-right', mobile: true }
                 );
-            }
-        });
-
-        document.addEventListener('touchmove', function(e) {
-            if (e.touches.length === 2) {
-                const currentDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                
-                // Deteksi pinch gesture yang signifikan
-                if (Math.abs(currentDistance - initialDistance) > 50) {
-                    handleSuspiciousActivity('Pinch/zoom gesture terdeteksi', 0.3);
-                }
             }
         });
     }
 
-    /**
-     * FUNGSI MEMBUAT WATERMARK UNTUK MOBILE
-     * Watermark membuat screenshot tidak berguna untuk kecurangan
-     */
     function createMobileWatermark() {
         const watermark = document.getElementById('mobileWatermark');
         if (!watermark) return;
         
-        const userId = $('#tes-user-id').val() || 'UNKNOWN';
-        const tesId = $('#tes-id').val() || 'UNKNOWN';
+        const userId = document.getElementById('tes-user-id')?.value || 'UNKNOWN';
+        const tesId = document.getElementById('tes-id')?.value || 'UNKNOWN';
         const timestamp = new Date().toLocaleDateString('id-ID');
         
         const texts = [
             `DILINDUNGI - ${userId}`,
             `KONFIDENSIAL - ${timestamp}`,
-            `TES ONLINE KALIMA TEST - ${tesId}`,
+            `UJIAN ONLINE - ${tesId}`,
             'SCREENSHOT DILARANG',
-            'AKAN DILAPORKAN'
+            'AKAN DILAPORKAN',
+            'SMK NEGERI 5 MALANG',
+            'UJIAN TERAWASI',
+            'DILARANG MENYEBARKAN'
         ];
         
-        // Clear existing watermarks
         watermark.innerHTML = '';
         
-        // Buat multiple watermark text
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 20; i++) {
             const textEl = document.createElement('div');
             textEl.className = 'watermark-text';
             textEl.textContent = texts[i % texts.length];
             textEl.style.top = (Math.random() * 100) + '%';
             textEl.style.left = (Math.random() * 100) + '%';
-            textEl.style.fontSize = (Math.random() * 8 + 16) + 'px';
+            textEl.style.fontSize = (Math.random() * 10 + 16) + 'px';
             textEl.style.opacity = (Math.random() * 0.05 + 0.08);
             textEl.style.transform = `rotate(${Math.random() * 360}deg)`;
             textEl.style.zIndex = '9998';
@@ -496,215 +908,16 @@
             watermark.appendChild(textEl);
         }
         
-        console.log('Mobile watermark created');
+        console.log('✅ Mobile watermark created');
     }
 
-    /**
-     * FUNGSI DETEKSI SCREENSHOT UNIFIED - Bekerja untuk desktop dan mobile
-     */
-    function initScreenshotDetection() {
-        // Deteksi device type terlebih dahulu
-        detectMobileDevice();
-        
-        console.log('Sistem deteksi screenshot diaktifkan - Mobile:', isMobileDevice);
-        
-        /**
-         * 1. DETEKSI KEYBOARD & GESTURES (Desktop + Mobile WebView)
-         */
-        document.addEventListener('keydown', function(e) {
-            // Deteksi Print Screen dan kombinasi tombol
-            if (e.keyCode === 44 || // Print Screen
-                (e.ctrlKey && e.keyCode === 44) || // Ctrl + Print Screen
-                (e.key === 'PrintScreen') || // Print Screen key
-                (e.metaKey && e.shiftKey && e.keyCode === 51) || // Cmd + Shift + 3 (Mac)
-                (e.metaKey && e.shiftKey && e.keyCode === 52) || // Cmd + Shift + 4 (Mac)
-                (e.altKey && e.keyCode === 44) // Alt + Print Screen
-            ) {
-                e.preventDefault();
-                handleScreenshotDetection('Tombol screenshot ditekan: ' + e.key, 1);
-            }
-            
-            // Kombinasi tombol mencurigakan
-            if ((e.ctrlKey && e.shiftKey && (e.keyCode === 83 || e.keyCode === 88)) ||
-                (e.altKey && e.keyCode === 83)) {
-                handleSuspiciousActivity('Kombinasi tombol mencurigakan: ' + e.key, 0.5);
-            }
-        });
-
-        /**
-         * 2. DETEKSI PERUBAHAN VISIBILITAS (Universal)
-         */
-        let visibilityChangeCount = 0;
-        let visibilityTimer;
-        
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                visibilityChangeCount++;
-                
-                // Reset counter setelah 10 detik
-                clearTimeout(visibilityTimer);
-                visibilityTimer = setTimeout(() => {
-                    visibilityChangeCount = 0;
-                }, 10000);
-                
-                // Jika terlalu sering dalam waktu singkat, anggap mencurigakan
-                if (visibilityChangeCount >= 3) {
-                    handleScreenshotDetection('Perubahan visibilitas terlalu sering', 0.7);
-                } else {
-                    const penalty = isMobileDevice ? 0.3 : 0.5;
-                    handleSuspiciousActivity('Tab/aplikasi tidak aktif', penalty);
-                }
-            }
-        });
-
-        /**
-         * 3. DETEKSI PERUBAHAN UKURAN WINDOW (Universal)
-         */
-        let originalSize = { 
-            width: window.innerWidth, 
-            height: window.innerHeight 
-        };
-        
-        window.addEventListener('resize', function() {
-            setTimeout(() => {
-                const currentSize = {
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                };
-                
-                // Tolerance lebih besar untuk mobile
-                const tolerance = isMobileDevice ? 100 : 50;
-                
-                if (Math.abs(currentSize.width - originalSize.width) > tolerance ||
-                    Math.abs(currentSize.height - originalSize.height) > tolerance) {
-                    const penalty = isMobileDevice ? 0.5 : 0.8;
-                    handleSuspiciousActivity('Perubahan ukuran window signifikan', penalty);
-                }
-                
-                originalSize = currentSize;
-            }, 100);
-        });
-
-        /**
-         * 4. DETEKSI FOCUS OUT (Universal)
-         */
-        window.addEventListener('blur', function() {
-            const penalty = isMobileDevice ? 0.2 : 0.5;
-            handleSuspiciousActivity('Window kehilangan fokus', penalty);
-        });
-
-        /**
-         * 5. DETEKSI MOUSE MENUJUK AREA SPECIFIC (Desktop)
-         */
-        if (!isMobileDevice) {
-            document.addEventListener('mousemove', function(e) {
-                if (e.clientY < 10) { // Mouse di area title bar
-                    handleSuspiciousActivity('Aktivitas mouse di area title bar', 0.3);
-                }
-            });
-        }
-
-        /**
-         * 6. INISIALISASI DETEKSI MOBILE KHUSUS
-         */
-        initMobileDetection();
-
-        /**
-         * 7. PERIODIC SECURITY CHECK (Universal)
-         */
-        setInterval(() => {
-            performSecurityCheck();
-        }, isMobileDevice ? 45000 : 30000); // Interval lebih lama untuk mobile
-    }
-
-    /**
-     * FUNGSI PENANGANAN DETEKSI SCREENSHOT - DIMODIFIKASI UNTUK MOBILE
-     * @param {string} reason - Alasan terdeteksinya screenshot
-     * @param {number} penaltyMultiplier - Pengali penalty (0-1)
-     */
-    function handleScreenshotDetection(reason, penaltyMultiplier = 1) {
-        const now = Date.now();
-        
-        // Cegah deteksi berulang dalam waktu singkat
-        const cooldown = isMobileDevice ? 10000 : 5000;
-        if (now - lastScreenshotDetection < cooldown) {
-            return;
-        }
-        
-        lastScreenshotDetection = now;
-        
-        // Penalty lebih ringan untuk mobile (mengurangi false positive)
-        const basePenalty = isMobileDevice ? 0.7 : 1;
-        const effectivePenalty = basePenalty * penaltyMultiplier;
-        securityViolationCount += effectivePenalty;
-        
-        console.warn('Aktivitas mencurigakan terdeteksi:', reason, 
-                    'Total pelanggaran:', securityViolationCount.toFixed(1),
-                    'Mobile:', isMobileDevice);
-        
-        // Tampilkan notifikasi
-        showScreenshotAlert();
-        
-        // Catat aktivitas ke server
-        logSecurityEvent({
-            type: 'SECURITY_VIOLATION',
-            reason: reason,
-            violationCount: securityViolationCount,
-            isMobile: isMobileDevice,
-            penalty: effectivePenalty,
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            url: window.location.href
-        });
-        
-        // Jika violation melebihi batas, paksa logout
-        if (securityViolationCount >= 3) {
-            handleMultipleViolations();
-        }
-    }
-
-    /**
-     * FUNGSI PENANGANAN AKTIVITAS MENCURIGAKAN - DIMODIFIKASI UNTUK MOBILE
-     * @param {string} activity - Deskripsi aktivitas mencurigakan
-     * @param {number} penaltyMultiplier - Pengali penalty (0-1)
-     */
-    function handleSuspiciousActivity(activity, penaltyMultiplier = 0.8) {
-        console.log('Aktivitas mencurigakan:', activity, 'Mobile:', isMobileDevice);
-        
-        // Penalty lebih ringan untuk aktivitas mencurigakan
-        const basePenalty = isMobileDevice ? 0.3 : 0.5;
-        const effectivePenalty = basePenalty * penaltyMultiplier;
-        
-        // Untuk aktivitas mencurigakan, tambahkan penalty kecil
-        securityViolationCount += effectivePenalty;
-        
-        // Catat aktivitas mencurigakan
-        logSecurityEvent({
-            type: 'SUSPICIOUS_ACTIVITY',
-            activity: activity,
-            penalty: effectivePenalty,
-            isMobile: isMobileDevice,
-            timestamp: new Date().toISOString()
-        });
-        
-        // Cek jika perlu logout
-        if (securityViolationCount >= 3) {
-            handleMultipleViolations();
-        }
-    }
-
-    /**
-     * FUNGSI MENAMPILKAN ALERT SCREENSHOT
-     * Menampilkan notifikasi visual bahwa screenshot terdeteksi
-     */
     function showScreenshotAlert() {
-        // Hapus alert sebelumnya jika ada
         const existingAlert = document.querySelector('.screenshot-alert');
         if (existingAlert) {
             existingAlert.remove();
         }
         
-        // Buat element alert baru
+        const violationsData = getViolationsData();
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-warning screenshot-alert';
         
@@ -712,13 +925,12 @@
         alertDiv.innerHTML = `
             <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
             <h4><i class="fa fa-warning"></i> Aktivitas Mencurigakan Terdeteksi${mobileText}!</h4>
-            <p>Aktivitas mencurigakan telah tercatat. Tindakan ini dapat mengakibatkan diskualifikasi.</p>
-            <small>Pelanggaran keamanan: ${securityViolationCount.toFixed(1)}/3</small>
+            <p>Aktivitas screenshot atau pelanggaran keamanan telah tercatat.</p>
+            <small>Total Poin Pelanggaran: <strong>${violationsData.totalPoints.toFixed(1)}</strong> / ${MAX_VIOLATION_POINTS}</small>
         `;
         
         document.body.appendChild(alertDiv);
         
-        // Hapus otomatis setelah 5 detik
         setTimeout(() => {
             if (alertDiv.parentElement) {
                 alertDiv.remove();
@@ -726,19 +938,149 @@
         }, 5000);
     }
 
-    /**
-     * FUNGSI PENCATATAN EVENT KEAMANAN
-     * @param {object} eventData - Data event keamanan yang akan dicatat
-     */
+    function performSecurityCheck() {
+        // Cek developer tools (desktop only)
+        if (!isMobileDevice && checkDevTools()) {
+            addViolation(
+                'DEVELOPER_TOOLS',
+                'Developer Tools terdeteksi terbuka selama tes',
+                VIOLATION_POINTS.DEVELOPER_TOOLS * 0.5,
+                { periodicCheck: true }
+            );
+        }
+        
+        // Heartbeat logging
+        addViolation(
+            'HEARTBEAT_CHECK',
+            'Periodic security check - Sistem aktif',
+            0.0,
+            { 
+                timestamp: new Date().toISOString(),
+                totalPoints: getViolationsData().totalPoints,
+                mobile: isMobileDevice
+            }
+        );
+    }
+
+    function checkDevTools() {
+        let devToolsOpen = false;
+        const widthThreshold = window.outerWidth - window.innerWidth > 100;
+        const heightThreshold = window.outerHeight - window.innerHeight > 100;
+        
+        const start = performance.now();
+        debugger;
+        const end = performance.now();
+        
+        if (end - start > 100) {
+            devToolsOpen = true;
+        }
+        
+        return devToolsOpen || widthThreshold || heightThreshold;
+    }
+
+    // ==================== FUNGSI UTAMA TES ====================
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(function() {
+            const sisa_menit = Math.floor(sisa_detik / 60);
+            const sisa_detik_display = sisa_detik % 60;
+            const waktuElement = document.getElementById("sisa-waktu");
+            
+            if (waktuElement) {
+                waktuElement.textContent = 
+                    `Sisa Waktu: ${sisa_menit}:${sisa_detik_display < 10 ? '0' : ''}${sisa_detik_display}`;
+            }
+            
+            sisa_detik--;
+            
+            if(sisa_detik < 0){
+                clearInterval(timerInterval);
+                window.location.reload();
+            }
+        }, 1000);
+    }
+
+    function handleMultipleViolations() {
+        if (isLoggingOut) return;
+        isLoggingOut = true;
+        
+        const violationsData = getViolationsData();
+        console.error('🚨 Batas pelanggaran terlampaui:', violationsData.totalPoints);
+        
+        // Hapus data pelanggaran
+        resetViolationData();
+        
+        // Catat forced logout
+        logSecurityEvent({
+            type: 'FORCED_LOGOUT',
+            reason: `Batas ${MAX_VIOLATION_POINTS} poin terlampaui`,
+            finalPoints: violationsData.totalPoints,
+            isMobile: isMobileDevice,
+            violationsCount: violationsData.violations.length
+        });
+        
+        showForcedLogoutModal();
+        startLogoutCountdown();
+    }
+
+    function showForcedLogoutModal() {
+        const violationsData = getViolationsData();
+        const violationCountElement = document.getElementById('violation-count');
+        
+        if (violationCountElement) {
+            violationCountElement.textContent = violationsData.totalPoints.toFixed(1);
+        }
+        // Tampilkan modal forced logout
+        $('#forcedLogoutModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        
+        // Tutup modal lainnya yang mungkin terbuka
+        $('#ipWarningModal').modal('hide');
+        $('#modal-hentikan').modal('hide');
+        $('#modal-proses').modal('hide');
+    }
+
+    function startLogoutCountdown() {
+        let countdown = 5;
+        const countdownElement = document.getElementById('logout-countdown');
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                forceLogout();
+            }
+        }, 1000);
+    }
+
+    function forceLogout() {
+        console.log('🔒 Memaksa logout...');
+        
+        // Pastikan data dihapus
+        resetViolationData();
+        
+        logSecurityEvent({
+            type: 'REDIRECT_TO_LOGOUT',
+            action: 'forced_logout_completed'
+        });
+        
+        window.location.href = '<?php echo site_url("welcome/logout"); ?>';
+    }
+
     function logSecurityEvent(eventData) {
-        // Tambahkan data tambahan
         const logData = {
             ...eventData,
-            tesUserId: $('#tes-user-id').val(),
-            tesId: $('#tes-id').val(),
+            tesUserId: document.getElementById('tes-user-id')?.value,
+            tesId: document.getElementById('tes-id')?.value,
             ipAddress: '<?= $_SERVER['REMOTE_ADDR'] ?? '' ?>',
             pageUrl: window.location.href,
-            viewport: `${window.innerWidth}x${window.innerHeight}`
+            viewport: `${window.innerWidth}x${window.innerHeight}`,
+            timestamp: new Date().toISOString()
         };
         
         // Kirim ke server untuk pencatatan
@@ -760,202 +1102,26 @@
         });
     }
 
-    /**
-     * FUNGSI PENANGANAN MULTIPLE VIOLATIONS - MEMAKSA LOGOUT
-     * Dijalankan ketika pelanggaran keamanan mencapai batas tertentu (3 kali)
-     */
-    function handleMultipleViolations() {
-        if (isLoggingOut) return; // Prevent multiple executions
-        isLoggingOut = true;
-        
-        console.error('Multiple security violations detected:', securityViolationCount, ' - Memaksa logout...');
-        
-        // Tampilkan modal forced logout
-        showForcedLogoutModal();
-        
-        // Catat forced logout ke server
-        logSecurityEvent({
-            type: 'FORCED_LOGOUT',
-            reason: 'Multiple security violations',
-            violationCount: securityViolationCount,
-            isMobile: isMobileDevice,
-            timestamp: new Date().toISOString()
-        });
-        
-        // Otomatis redirect setelah countdown
-        startLogoutCountdown();
-    }
+    // ==================== PENGAMANAN COPY-PASTE ====================
 
-    /**
-     * FUNGSI MENAMPILKAN MODAL FORCED LOGOUT
-     * Menampilkan modal yang memberitahu user akan di-logout paksa
-     */
-    function showForcedLogoutModal() {
-        // Update violation count di modal
-        document.getElementById('violation-count').textContent = securityViolationCount.toFixed(1);
-        
-        // Tampilkan modal forced logout
-        $('#forcedLogoutModal').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-        
-        // Tutup modal lainnya yang mungkin terbuka
-        $('#ipWarningModal').modal('hide');
-        $('#modal-hentikan').modal('hide');
-        $('#modal-proses').modal('hide');
-    }
-
-    /**
-     * FUNGSI COUNTDOWN UNTUK LOGOUT OTOMATIS
-     * Menghitung mundur sebelum redirect ke halaman logout
-     */
-    function startLogoutCountdown() {
-        let countdown = 5;
-        const countdownElement = document.getElementById('logout-countdown');
-        
-        const countdownInterval = setInterval(() => {
-            countdown--;
-            countdownElement.textContent = countdown;
-            
-            if (countdown <= 0) {
-                clearInterval(countdownInterval);
-                forceLogout();
-            }
-        }, 1000);
-    }
-
-    /**
-     * FUNGSI MEMAKSA LOGOUT
-     * Redirect user ke halaman logout
-     */
-    function forceLogout() {
-        console.log('Memaksa logout karena pelanggaran keamanan...');
-        
-        // Catat final logout event
-        logSecurityEvent({
-            type: 'REDIRECT_TO_LOGOUT',
-            timestamp: new Date().toISOString()
-        });
-        
-        // Redirect ke halaman logout
-        window.location.href = '<?php echo site_url("welcome/logout"); ?>';
-    }
-
-    /**
-     * FUNGSI PEMERIKSAAN KEAMANAN BERKALA
-     * Melakukan berbagai pemeriksaan keamanan secara periodik
-     */
-    function performSecurityCheck() {
-        // Cek jika developer tools terbuka (hanya desktop)
-        if (!isMobileDevice) {
-            const devToolsOpened = checkDevTools();
-            if (devToolsOpened) {
-                handleScreenshotDetection('Developer Tools terdeteksi terbuka', 0.8);
-            }
-        }
-        
-        // Cek perubahan pada DOM yang mencurigakan
-        checkDOMTampering();
-        
-        // Cek aktivitas network yang tidak biasa
-        checkNetworkAnomalies();
-        
-        // Heartbeat logging
-        logSecurityEvent({
-            type: 'HEARTBEAT',
-            isMobile: isMobileDevice,
-            timestamp: new Date().toISOString(),
-            viewport: `${window.innerWidth}x${window.innerHeight}`,
-            orientation: window.orientation || 'not available'
-        });
-    }
-
-    /**
-     * FUNGSI PENDETEKSI DEVELOPER TOOLS
-     * @returns {boolean} - Status apakah dev tools terbuka
-     */
-    function checkDevTools() {
-        let devToolsOpen = false;
-        
-        // Metode 1: Cek perbedaan ukuran window
-        const widthThreshold = window.outerWidth - window.innerWidth > 100;
-        const heightThreshold = window.outerHeight - window.innerHeight > 100;
-        
-        // Metode 2: Cek waktu execution (dev tools memperlambat)
-        const start = performance.now();
-        debugger;
-        const end = performance.now();
-        
-        if (end - start > 100) {
-            devToolsOpen = true;
-        }
-        
-        return devToolsOpen || widthThreshold || heightThreshold;
-    }
-
-    /**
-     * FUNGSI PENGECEKAN PERUBAHAN DOM
-     * Mendeteksi perubahan tidak wajar pada DOM
-     */
-    function checkDOMTampering() {
-        // Cek jika ada element tersembunyi yang mencurigakan
-        const hiddenElements = document.querySelectorAll('*[style*="display: none"], *[style*="visibility: hidden"]');
-        if (hiddenElements.length > 10) {
-            handleSuspiciousActivity('Banyak element DOM tersembunyi terdeteksi', 0.8);
-        }
-    }
-
-    /**
-     * FUNGSI PENGECEKAN ANOMALI NETWORK
-     * Mendeteksi aktivitas network yang mencurigakan
-     */
-    function checkNetworkAnomalies() {
-        // Basic network check - bisa dikembangkan lebih lanjut
-        if (!navigator.onLine) {
-            handleSuspiciousActivity('Koneksi jaringan terputus', 0.8);
-        }
-    }
-
-    /**
-     * FUNGSI PENGAMANAN HALAMAN TES: Mencegah tindakan copy-paste
-     * Kode ini bertujuan untuk melindungi konten soal dari tindakan penyalinan
-     * oleh peserta tes selama ujian berlangsung.
-     */
-
-    // Fungsi untuk menerapkan pengamanan copy
     function terapkanPengamananCopy() {
-        /**
-         * 1. BLOKIR KLIK KANAN (CONTEXT MENU)
-         * Mencegah akses menu klik kanan yang bisa digunakan untuk copy
-         */
+        // Blokir klik kanan
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            console.log('Klik kanan dinonaktifkan untuk keamanan tes');
         });
 
-        /**
-         * 2. BLOKIR DRAG DAN DROP
-         * Mencegah drag teks yang bisa digunakan untuk seleksi dan copy
-         */
+        // Blokir drag dan drop
         document.addEventListener('dragstart', function(e) {
             e.preventDefault();
         });
 
-        /**
-         * 3. BLOKIR SELEKSI TEKS
-         * Mencegah seleksi teks melalui mouse atau keyboard
-         */
+        // Blokir seleksi teks
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
         });
 
-        /**
-         * 4. BLOKIR SHORTCUT KEYBOARD
-         * Mencegah penggunaan shortcut keyboard untuk copy, select all, dll.
-         */
+        // Blokir shortcut keyboard
         document.addEventListener('keydown', function(e) {
-            // Deteksi kombinasi Ctrl+C, Ctrl+A, Ctrl+X, Ctrl+S, Ctrl+U
             if (e.ctrlKey && (
                 e.keyCode === 67 ||  // C - Copy
                 e.keyCode === 65 ||  // A - Select All
@@ -964,63 +1130,20 @@
                 e.keyCode === 85     // U - View Source
             )) {
                 e.preventDefault();
-                console.log('Shortcut keyboard diblokir untuk keamanan tes');
             }
             
-            // Blokir F12 (Developer Tools)
-            if (e.keyCode === 123) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
                 e.preventDefault();
-                console.log('Developer Tools diblokir untuk keamanan tes');
-            }
-            
-            // Blokir Ctrl+Shift+I (Developer Tools)
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-                e.preventDefault();
-                console.log('Developer Tools diblokir untuk keamanan tes');
             }
         });
 
-        /**
-         * 5. BLOKIR EVENT COPY EXPLICIT
-         * Mencegah aksi copy meskipun berhasil diseleksi
-         */
+        // Blokir event copy
         document.addEventListener('copy', function(e) {
             e.preventDefault();
-            // Opsional: Tampilkan pesan peringatan
-            alert('Tindakan copy tidak diizinkan selama tes berlangsung.');
         });
     }
 
-    // Tampilkan modal warning jika IP tidak dikenali
-    <?php if (!$ip_allowed): ?>
-    $('#ipWarningModal').modal('show');
-    <?php endif; ?>
-    
-    // Check setiap 10 detik
-    setInterval(checkNetworkStatus, 10000);
-
-    function checkNetworkStatus() {
-        const status = navigator.onLine ? 'online' : 'offline';
-        
-        // Kirim status ke server
-        fetch('network_check.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'network_check=1&status=' + status
-        })
-        .then(response => response.text())
-        .then(data => {
-            if (status === 'offline') {
-                window.location.reload(true);
-            }
-        });
-    }
-
-    // Event listener untuk perubahan jaringan
-    window.addEventListener('online', checkNetworkStatus);
-    window.addEventListener('offline', checkNetworkStatus);
+    // ==================== FUNGSI TES EXISTING ====================
 
     function zoombesar(){
         $('#isi-tes-soal').css("font-size", "140%");
@@ -1229,6 +1352,8 @@
                 $('#hentikan-dijawab').val(data.tes_dijawab+" dijawab. "+data.tes_blum_dijawab+" belum dijawab.");
                 $('#hentikan-belum-dijawab').val(data.tes_blum_dijawab);
 
+                // Reset data pelanggaran ketika tes selesai normal
+                resetViolationData();
 
                 $("#modal-hentikan").modal('show');
             }else{
@@ -1248,121 +1373,109 @@
         }
     }
 
-    $(function () {
-        /**
-         * INISIALISASI SISTEM KEAMANAN
-         * Menjalankan semua sistem pengamanan saat halaman dimuat
-         */
-        terapkanPengamananCopy(); // Pengamanan copy-paste
-        initScreenshotDetection(); // Deteksi screenshot
+    // ==================== INISIALISASI TEROPTIMASI ====================
 
-        var sisa_detik = <?php if(!empty($detik_sisa)){ echo $detik_sisa; } ?>;
-        setInterval(function() {
-            var sisa_menit = Math.round(sisa_detik/60);
-            sisa_detik = sisa_detik-1;
-            $("#sisa-waktu").html("Sisa Waktu : "+sisa_menit+" menit");
-
-            if(sisa_detik<1){
-                window.location.reload();
+    $(document).ready(function() {
+        // Inisialisasi sistem
+        initializeViolations();
+        initSecuritySystem();
+        startTimer();
+        
+        // Catat mulai tes
+        addViolation(
+            'TES_STARTED',
+            `Memulai tes - ${isMobileDevice ? 'Mobile' : 'Desktop'}`,
+            0.0,
+            {
+                deviceType: isMobileDevice ? 'mobile' : 'desktop',
+                viewport: `${window.innerWidth}x${window.innerHeight}`
             }
-        }, 1000);
+        );
+        
+        console.log('✅ Sistem tes online diinisialisasi');
+        
+        // Setup event listeners untuk navigasi
+        $('#btn-sebelumnya').click(() => soal_navigasi(-1));
+        $('#btn-selanjutnya').click(() => soal_navigasi(1));
+        $('#btn-hentikan').click(hentikan_tes);
+        
+        // Setup form submissions
+        $('#form-kerjakan').submit(handleJawabanSubmit);
+        $('#form-hentikan').submit(handleHentikanSubmit);
 
-        $('#btn-sebelumnya').click(function(){
-            soal_navigasi(-1);
-        });
-
-        $('#btn-selanjutnya').click(function(){
-            soal_navigasi(1);
-        });
-
-        $('#btn-hentikan').click(function(){
-            hentikan_tes();
-        });
-        /**
-         * Submit form soal saat sudah menjawab
-         */
-        $('#form-kerjakan').submit(function(){
-            $("#modal-proses").modal('show');
-            $.ajax({
-                    url:"<?php echo site_url().'/'.$url; ?>/simpan_jawaban",
-                    type:"POST",
-                    data:$('#form-kerjakan').serialize(),
-                    cache: false,
-                    timeout: 10000,
-                    success:function(respon){
-                        var obj = $.parseJSON(respon);
-                        if(obj.status==1){
-                            $("#modal-proses").modal('hide');
-                            notify_success(obj.pesan);
-                            $('#btn-soal-'+obj.nomor_soal).removeClass('btn-default');
-                            $('#btn-soal-'+obj.nomor_soal).removeClass('btn-warning');
-                            $('#btn-soal-'+obj.nomor_soal).addClass('btn-primary');
-                        }else if(obj.status==2){
-                            window.location.reload();
-                        }else{
-                            $("#modal-proses").modal('hide');
-                            notify_error(obj.pesan);
-                        }
-                    },
-                    error: function(xmlhttprequest, textstatus, message) {
-                        if(textstatus==="timeout") {
-                            $("#modal-proses").modal('hide');
-                            notify_error("Gagal menyimpan jawaban, Silahkan Refresh Halaman");
-                        }else{
-                            $("#modal-proses").modal('hide');
-                            notify_error(textstatus);
-                        }
-                    }
-            });
-            return false;
-        });
-
-        /**
-         * Submit form menyelesaikan tes
-         */
-        $('#form-hentikan').submit(function(){
-            $("#modal-proses").modal('show');
-            $.ajax({
-                    url:"<?php echo site_url().'/'.$url; ?>/hentikan_tes",
-                    type:"POST",
-                    data:$('#form-hentikan').serialize(),
-                    cache: false,
-                    timeout: 10000,
-                    success:function(respon){
-                        var obj = $.parseJSON(respon);
-                        if(obj.status==1){
-                            window.location.reload();
-                        }else{
-                            $("#modal-proses").modal('hide');
-                            notify_error(obj.pesan);
-                        }
-                    },
-                    error: function(xmlhttprequest, textstatus, message) {
-                        if(textstatus==="timeout") {
-                            $("#modal-proses").modal('hide');
-                            notify_error("Gagal Menyelesaikan Tes, Silahkan Refresh Halaman");
-                        }else{
-                            $("#modal-proses").modal('hide');
-                            notify_error(textstatus);
-                        }
-                    }
-            });
-            return false;
-        });
-
-        $( document ).ready(function() {
-            // Log aktivitas mulai tes dengan info device
-            logSecurityEvent({
-                type: 'TES_STARTED',
-                isMobile: isMobileDevice,
-                deviceInfo: {
-                    userAgent: navigator.userAgent,
-                    viewport: `${window.innerWidth}x${window.innerHeight}`,
-                    touchPoints: navigator.maxTouchPoints || 0,
-                    platform: navigator.platform
-                },
-                timestamp: new Date().toISOString()
-            });
-        });
+        // Tampilkan modal warning jika IP tidak dikenali
+        <?php if (!$ip_allowed): ?>
+        $('#ipWarningModal').modal('show');
+        <?php endif; ?>
     });
+
+    function handleJawabanSubmit(e) {
+        e.preventDefault();
+        $("#modal-proses").modal('show');
+        
+        $.ajax({
+            url:"<?php echo site_url().'/'.$url; ?>/simpan_jawaban",
+            type:"POST",
+            data:$('#form-kerjakan').serialize(),
+            cache: false,
+            timeout: 10000,
+            success:function(respon){
+                var obj = $.parseJSON(respon);
+                if(obj.status==1){
+                    $("#modal-proses").modal('hide');
+                    notify_success(obj.pesan);
+                    $('#btn-soal-'+obj.nomor_soal).removeClass('btn-default');
+                    $('#btn-soal-'+obj.nomor_soal).removeClass('btn-warning');
+                    $('#btn-soal-'+obj.nomor_soal).addClass('btn-primary');
+                }else if(obj.status==2){
+                    window.location.reload();
+                }else{
+                    $("#modal-proses").modal('hide');
+                    notify_error(obj.pesan);
+                }
+            },
+            error: function(xmlhttprequest, textstatus, message) {
+                if(textstatus==="timeout") {
+                    $("#modal-proses").modal('hide');
+                    notify_error("Gagal menyimpan jawaban, Silahkan Refresh Halaman");
+                }else{
+                    $("#modal-proses").modal('hide');
+                    notify_error(textstatus);
+                }
+            }
+        });
+        return false;
+    }
+
+    function handleHentikanSubmit(e) {
+        e.preventDefault();
+        $("#modal-proses").modal('show');
+        
+        $.ajax({
+            url:"<?php echo site_url().'/'.$url; ?>/hentikan_tes",
+            type:"POST",
+            data:$('#form-hentikan').serialize(),
+            cache: false,
+            timeout: 10000,
+            success:function(respon){
+                var obj = $.parseJSON(respon);
+                if(obj.status==1){
+                    window.location.reload();
+                }else{
+                    $("#modal-proses").modal('hide');
+                    notify_error(obj.pesan);
+                }
+            },
+            error: function(xmlhttprequest, textstatus, message) {
+                if(textstatus==="timeout") {
+                    $("#modal-proses").modal('hide');
+                    notify_error("Gagal Menyelesaikan Tes, Silahkan Refresh Halaman");
+                }else{
+                    $("#modal-proses").modal('hide');
+                    notify_error(textstatus);
+                }
+            }
+        });
+        return false;
+    }
 </script>
